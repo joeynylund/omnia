@@ -24,15 +24,60 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.navbar {
+  padding: 20px!important;
+  width: 100%!important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.navbar-collapse {
+  justify-content: flex-end;
+}
+
+.dropdown-toggle::after {
+  color: #000;
+}
+
+.dropdown-item {
+  font-weight: 600;
+}
+
+.section {
+  padding: 60px 0px 100px;
+}
+
+.select-game {
+  background-image: url('./assets/bg-pattern-small.jpg');
+  background-repeat: repeat;
+}
+
+.game-cover {
+  filter: grayscale(100%);
+  transition: all .5s;
+  cursor: pointer;
+  padding: 0px!important;
+  margin: 10px 20px;
+  border-radius: 5px;
+  width: 200px!important;
+}
+
+.game-cover:hover {
+  filter: grayscale(0%);
+  transform: translate(4px,-4px);
+  box-shadow: -1px 1px #000, -2px 2px #000, -3px 3px #000, -4px 4px #000;
+}
+
+@media only screen and (max-width: 728px) {
+  .dropdown-menu {
+    right: 25%;
   }
-  to {
-    transform: rotate(360deg);
+  .copyright {
+    flex-direction: column;
   }
+  .copyright p {
+    margin: 10px 0px!important;
+  }
+}
+
+a {
+  text-decoration: none!important;
 }
