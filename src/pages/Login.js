@@ -26,13 +26,15 @@ function Login() {
 
     const handleSubmit = e => {
         e.preventDefault();
-        login(loginCredentials.email, loginCredentials.password)
-        .then(() => {
-          history.push('/')
-        })
-        .catch((error) => {
+
+        try{
+            login(loginCredentials.email, loginCredentials.password)
+            history.push('/')
+        } catch (error) {
             console.log(error.code)
-        })
+        }
+    
+
     }
   return (
     <>

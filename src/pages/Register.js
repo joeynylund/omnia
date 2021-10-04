@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { firebase, firestore } from '../config/firebase';
+import SmallFooter from '../components/SmallFooter';
+import { firestore } from '../config/firebase';
 import { Container, Row, Col, Form, FormFeedback, FormGroup, Input, Button, Label } from 'reactstrap';
-import banner from '../assets/omnia_full_dark.png';
 import { useAuth } from "../config/context"
 import { Link, useHistory } from "react-router-dom"
 
-function Login() {
+function Register() {
     const history = useHistory()
     const db = firestore.collection('games');
     const [games, setGames] = useState([]);
@@ -58,30 +57,23 @@ function Login() {
         <Header />
             <div className='select-game' style={{minHeight:'100vh'}}>
                 <Container>
-                    <div style={{padding:'15% 0px'}}>
+                    <div style={{padding:'5% 0px'}}>
                         <center>
-                        <h2 style={{fontWeight:'900'}}>Athlete Profile {step}</h2>
-                        <Form style={{width:'500px', maxWidth:'100%', marginTop:'20px'}} onSubmit={step1}>
-                            <FormGroup>
-                                <Input type="text" id="firstName" onChange={handleChange} placeholder="First Name" style={{height:'50px'}}></Input>
-                            </FormGroup>
-                            <FormGroup style={{marginTop:'10px'}}>
-                                <Input type="text" id="lastName" onChange={handleChange} placeholder="Last Name" style={{height:'50px'}}></Input>
-                            </FormGroup>
-                            <FormGroup style={{marginTop:'10px'}}>
-                                <Input type="email" id="email" onChange={handleChange} placeholder="Email Address" style={{height:'50px'}}></Input>
-                            </FormGroup>
-                            <FormGroup style={{marginTop:'10px'}}>
-                                <Input type="password" id="password" onChange={handleChange} placeholder="Password" style={{height:'50px'}}></Input>
-                            </FormGroup>
-                            <Button style={{marginTop:'20px',width:'100%',backgroundColor:'#242425',height:'50px'}}>Register</Button>
-                        </Form>
+                            <h2 style={{fontWeight:'900'}}>Athlete Profile</h2>
+                            <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'800px',border:'1px solid #ccc'}}>
+                                <h5 style={{margin:'0'}}>Which of the supported Omnia titles do you primarily compete in?</h5>
+                                <p><i>Providing this information will determine the rest of your Profile setup</i></p>
+                                {games && games.map((game) => (
+                                    <img src={'data:image/jpeg;base64,' + game.image} style={{width:'200px',margin:'0px 15px',borderRadius:'10px'}} />
+                                ))}
+                            </div>
                         </center>
                     </div>
                 </Container>
             </div>
+        <SmallFooter />
     </>
   );
 }
 
-export default Login;
+export default Register;
