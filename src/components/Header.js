@@ -23,7 +23,7 @@ const Header = (props) => {
 
   const history = useHistory()
 
-  const { currentUser, logout } = useAuth();
+  const { currentUser, admin, logout } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -32,7 +32,7 @@ const Header = (props) => {
   const handleLogout = () => {
     logout()
     .then(() => {
-      history.push('/')
+      history.push('/login')
     })
   }
 
@@ -66,8 +66,7 @@ const Header = (props) => {
             <UncontrolledDropdown style={{display:"block",textAlign:'center'}}>
             <DropdownToggle nav caret style={{padding:'8px'}}>
               <div style={{display:'inline-block',alignItems:'center'}}>
-                {console.log(currentUser)}
-                <h6 style={{display:'inline', color:'#000'}}>{currentUser.displayName !== null && currentUser.displayName.toUpperCase()}</h6>
+                <h6 style={{display:'inline', color:'#000'}}>{currentUser.displayName !== null ? currentUser.displayName.toUpperCase() : localStorage.getItem('userName')}</h6>
               </div>
             </DropdownToggle>
             <DropdownMenu right>
@@ -87,8 +86,7 @@ const Header = (props) => {
             </UncontrolledDropdown>
             : <Link to="/login">
               <NavbarText style={{padding:'8px',fontWeight:'500',color:'#000',display:'block',textAlign:'center',cursor:'pointer'}}>LOGIN</NavbarText>
-            </Link> }
-            
+            </Link> }            
         </Collapse>
       </Navbar>
     </>

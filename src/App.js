@@ -9,7 +9,8 @@ import {
 } from "react-router-dom";
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Register from './pages/Register';
+import SignUp from './pages/SignUp';
+import CreateProfile from './pages/CreateProfile';
 import { AuthProvider } from './config/context';
 
 function App() {
@@ -24,8 +25,11 @@ function App() {
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/register">
-            <Register />
+          <Route path="/create-profile">
+            <CreateProfile />
+          </Route>
+          <Route path="/signup">
+            <SignUp />
           </Route>
         </Switch>
     </Router>

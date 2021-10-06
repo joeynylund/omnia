@@ -42,12 +42,15 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
-        setLoading(true)
-        setCurrentUser(user)
-        setLoading(false)
+      setCurrentUser(user)
+      setLoading(false)
+      if(user) {
+        if(user.displayName !== null) {
+          localStorage.removeItem('userName')
+        }
+      }
     })
-
-  }, [currentUser])
+  }, [])
 
   const value = {
     currentUser,
@@ -61,7 +64,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading === false && children}
     </AuthContext.Provider>
   )
 }

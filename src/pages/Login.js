@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Container, Row, Col, Form, FormFeedback, FormGroup, Input, Button, Label } from 'reactstrap';
+import { auth } from '../config/firebase';
 import banner from '../assets/omnia_full_dark.png';
 import { useAuth } from "../config/context"
 import { Link, useHistory } from "react-router-dom"
@@ -17,43 +18,77 @@ function Login() {
     const [passwordError, setPasswordError] = useState('');
 
     const handleChange = (e) => {
-        const {id, value} = e.target
+        const {id, value} = e.target;
         setLoginCredentials(prevState => ({
             ...prevState,
             [id]: value
         }));
+
+        if(id === 'email') {
+            setEmailError('')
+        }
+
+        if(id === 'password') {
+            setPasswordError('')
+        }
+
     }
 
     const handleSubmit = e => {
         e.preventDefault();
 
-        try{
-            login(loginCredentials.email, loginCredentials.password)
-            history.push('/')
-        } catch (error) {
-            console.log(error.code)
-        }
-    
+        var validation = 0;
 
+        if(loginCredentials.email === "") {
+            setEmailError('Email cannot be blank!')
+        } else {
+            validation++
+        }
+
+        if(loginCredentials.password === "") {
+            setPasswordError('Password cannot be blank!')
+        } else {
+            validation++
+        }
+
+        if(validation === 2) {
+            auth.signInWithEmailAndPassword(loginCredentials.email, loginCredentials.password).then(() => {
+                history.push('/')
+            })
+            .catch((error) => {
+                console.log(error.code)
+                if(error.code === 'auth/wrong-password') {
+                    setPasswordError('That password is incorrect. Try again.')
+                }
+                if(error.code === 'auth/user-not-found') {
+                    setEmailError('A user with that email does not exist.')
+                    setPasswordError('')
+                }
+            })
+        }
     }
   return (
     <>
         <Header />
             <div className='select-game' style={{minHeight:'100vh'}}>
                 <Container>
-                    <div style={{padding:'15% 0px'}}>
+                    <div style={{padding:'5% 0px'}}>
                         <center>
-                        <img src={banner} />
+                        <img src={banner} style={{maxWidth:'100%'}} />
                         <Form style={{width:'500px', maxWidth:'100%', marginTop:'20px'}} onSubmit={handleSubmit}>
                             <FormGroup>
-                                <Input type="email" id="email" onChange={handleChange} placeholder="Email Address" style={{height:'50px'}}></Input>
+                                <Label style={{width:'100%',textAlign:'left'}}>Email Address</Label>
+                                <Input type="email" id="email" onChange={handleChange} style={{height:'50px'}} invalid={emailError === '' ? false : true}></Input>
+                                <FormFeedback style={{width:'100%',textAlign:'left'}}>{emailError}</FormFeedback>
                             </FormGroup>
                             <FormGroup style={{marginTop:'10px'}}>
-                                <Input type="password" id="password" onChange={handleChange} placeholder="Password" style={{height:'50px'}}></Input>
+                                <Label style={{width:'100%',textAlign:'left'}}>Password</Label>
+                                <Input type="password" id="password" onChange={handleChange} style={{height:'50px'}} invalid={passwordError === '' ? false : true}></Input>
+                                <FormFeedback style={{width:'100%',textAlign:'left'}}>{passwordError}</FormFeedback>
                             </FormGroup>
                             <Button style={{marginTop:'20px',width:'100%',backgroundColor:'#242425',height:'50px'}}>Login</Button>
                         </Form>
-                        <p style={{marginTop:'20px'}}>Don't have an account? <Link to='/register' style={{color:'#000'}}>Create One</Link></p>
+                        <p style={{marginTop:'20px'}}>Don't have an account? <Link to='/signup' style={{color:'#000'}}>Create One</Link></p>
                         </center>
                     </div>
                 </Container>
