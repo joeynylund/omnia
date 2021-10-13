@@ -11,6 +11,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import CreateProfile from './pages/CreateProfile';
+import Admin from './pages/Admin';
+import Teams from './pages/Teams';
 import { AuthProvider } from './config/context';
 
 function App() {
@@ -22,14 +24,20 @@ function App() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/login">
+          <Route exact path="/login">
             <Login />
           </Route>
-          <Route path="/create-profile">
+          <Route exact path="/create-profile">
             <CreateProfile />
           </Route>
-          <Route path="/signup">
+          <Route exact path="/signup">
             <SignUp />
+          </Route>
+          <Route exact path="/admin">
+            <Admin />
+          </Route>
+          <Route exact path="/teams">
+            <Teams />
           </Route>
         </Switch>
     </Router>

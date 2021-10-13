@@ -42,15 +42,19 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
-      setCurrentUser(user)
-      setLoading(false)
-      if(user) {
-        if(user.displayName !== null) {
-          localStorage.removeItem('userName')
+        setCurrentUser(user)
+        setLoading(false)
+        if(user) {
+          if(user.displayName !== null) {
+            localStorage.removeItem('userName')
+          }
         }
-      }
+        
     })
-  }, [])
+
+    
+
+  }, [currentUser])
 
   const value = {
     currentUser,

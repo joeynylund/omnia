@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/:example', (req, res) => {
+app.get('/test/:example', (req, res) => {
     var test = req.params.example;
 
     var transporter = nodemailer.createTransport({
@@ -58,7 +58,7 @@ app.get('/admin/:email', (req, res) => {
     console.log('Received')
     admin
   .auth()
-  .getUserByEmail('test@test.com')
+  .getUserByEmail('joeynylund@yahoo.com')
   .then((userRecord) => {
     // See the UserRecord reference doc for the contents of userRecord.
     console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);

@@ -29,10 +29,10 @@ function SignUp () {
 
     const handleChange = (e) => {
         const {id, value} = e.target
-        setCredentials(prevState => ({
+        setCredentials({
             ...prevState,
             [id]: value
-        }));
+        });
 
         if(id === 'firstName') {
             setFirstNameError('')
