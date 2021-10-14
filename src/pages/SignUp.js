@@ -30,7 +30,7 @@ function SignUp () {
     const handleChange = (e) => {
         const {id, value} = e.target
         setCredentials({
-            ...prevState,
+            ...credentials,
             [id]: value
         });
 

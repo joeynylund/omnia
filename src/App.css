@@ -81,3 +81,11 @@
 a {
   text-decoration: none!important;
 }
+
+.profile-back-btn {
+  margin: 20px;
+}
+
+.profile-next-btn {
+  margin: 20px;
+}
