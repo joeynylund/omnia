@@ -76,6 +76,11 @@
   .copyright p {
     margin: 10px 0px!important;
   }
+
+  .profile-btn-div{
+    flex-direction: column-reverse!important;
+    align-items: center;
+  }
 }
 
 a {
@@ -88,4 +93,135 @@ a {
 
 .profile-next-btn {
   margin: 20px;
+}
+
+.main {
+  position: relative;
+}
+
+.main-agent {
+  outline: 4px solid #FF9727;
+  border-radius: 5px;
+}
+
+.main-agent-apex {
+  outline: 4px solid #FF9727;
+  border-radius: 50%;
+}
+
+.second {
+  position: relative;
+}
+
+.second-agent {
+  outline: 4px solid #01865e;
+  border-radius: 5px;
+}
+
+.second-agent-apex {
+  outline: 4px solid #01865e;
+  border-radius: 50%;
+}
+
+.main:after{
+  content: "1";
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  display: block;
+  border-radius: 50%;
+  background: #FF9727;
+  border: 1px solid #FFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  color: #FFF;
+  position: absolute;
+  top: -4px;
+  left: -4px;
+}
+
+.second:after{
+  content: "2";
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  display: block;
+  border-radius: 50%;
+  background: #01865e;
+  border: 1px solid #FFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  color: #FFF;
+  position: absolute;
+  top: -4px;
+  left: -4px;
+}
+
+.main-apex:after{
+  content: "1";
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  display: block;
+  border-radius: 50%;
+  background: #FF9727;
+  border: 1px solid #FFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  color: #FFF;
+  position: absolute;
+  top: 1px;
+  left: 8px;
+}
+
+.second-apex:after{
+  content: "2";
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  display: block;
+  border-radius: 50%;
+  background: #01865e;
+  border: 1px solid #FFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  color: #FFF;
+  position: absolute;
+  top: 1px;
+  left: 8px;
+}
+
+.role {
+  background-color: #818181;
+  color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.role:hover {
+  background-color: #616161;
+  color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .2s;
+  transform: scale(1.01);
+}
+
+.role-selected {
+  background-color: #121212;
+  color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .2s;
+  transform: scale(1.05);
+}
+
+.profile-btn-div {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
 }
