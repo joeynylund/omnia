@@ -6,7 +6,7 @@ import { Container, Row, Col, Form, FormFeedback, FormGroup, Input, Button, Labe
 import { useAuth } from "../config/context"
 import { Link, useHistory } from "react-router-dom"
 
-function CreateProfile() {
+function UpdateProfile() {
     const history = useHistory()
     const db = firestore.collection('games');
     const [games, setGames] = useState([]);
@@ -93,6 +93,10 @@ function CreateProfile() {
                     gameAgents.push(doc2.data())
                 });
                 setAgents(gameAgents)
+                firestore.collection('player_accounts').doc(currentUser.uid).get()
+                .then((querySnapshot3) => {
+                    setProfile(querySnapshot3.data())
+                });
             })
                 .catch((error) => {
                 console.log("Error getting documents: ", error);
@@ -110,9 +114,9 @@ function CreateProfile() {
             firestore.collection('player_accounts').doc(currentUser.uid).get()
             .then((docSnapshot) => {
                 if(docSnapshot.exists) {
-                    alert('Already have a profile you little slut')
-                } else {
                     getGames();
+                } else {
+                    alert('You do not have a profile you little slut')
                 }
             })
             
@@ -124,10 +128,27 @@ function CreateProfile() {
         <Header />
             <div className='select-game' style={{minHeight:'100vh'}}>
                 <Container>
-                    {step === 0 &&
                     <div style={{padding:'5% 0px'}}>
                         <center>
-                            <h2 style={{fontWeight:'900'}}>Athlete Profile</h2>
+                            <h2 style={{fontWeight:'900'}}>Update Your Athlete Profile</h2>
+                            <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
+                                <h5 style={{margin:'0'}}>Primary Game</h5>
+                                <Row style={{justifyContent:'center'}}>
+                                {games && games.map((game) => (
+                                    <Col md="3" style={{padding:'10px'}}>
+                                    <div className={profile.game === game.name ? 'role-selected' : 'role'} onClick={() => setProfile({...profile,game: game.name})}>
+                                        {game.name}
+                                    </div>
+                                </Col>
+                                ))}
+                                </Row>
+                            </div>
+                        </center>
+                    </div>
+                    {step === 1 &&
+                    <div style={{padding:'5% 0px'}}>
+                        <center>
+                            <h2 style={{fontWeight:'900'}}>Update Your Athlete Profile</h2>
                             <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
                                 <h5 style={{margin:'0'}}>Which of the supported Omnia titles do you primarily compete in?</h5>
                                 <p><i>Providing this information will determine the rest of your Profile setup</i></p>
@@ -267,4 +288,4 @@ function CreateProfile() {
   );
 }
 
-export default CreateProfile;
+export default UpdateProfile;
