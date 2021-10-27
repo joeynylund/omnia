@@ -132,6 +132,7 @@ function UpdateProfile() {
                         <center>
                             <h2 style={{fontWeight:'900'}}>Update Your Athlete Profile</h2>
                             <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
+                                <>
                                 <h5 style={{margin:'0'}}>Primary Game</h5>
                                 <Row style={{justifyContent:'center'}}>
                                 {games && games.map((game) => (
@@ -142,6 +143,18 @@ function UpdateProfile() {
                                 </Col>
                                 ))}
                                 </Row>
+                                </>
+                                <br/>
+                                <>
+                                <h5 style={{margin:'0'}}>Main & Secondary Agents</h5>
+                                <Row style={{justifyContent:'center'}}>
+                                {agents && agents.filter(agent => agent.game === profile.game ).map((agent) => (
+                                    <div className={profile.primary_agent === agent.name ? 'main' : profile.secondary_agent === agent.name ? 'second' : '' } onClick={() => selectAgent(agent.name)} style={{width:'100px',margin:'5px',display:'inline-block'}}>
+                                        <img src={'data:image/jpeg;base64,' + agent.image} className={profile.primary_agent === agent.name ? profile.game === 'Apex Legends' ? 'main-agent-apex' : 'main-agent' : profile.secondary_agent === agent.name ? profile.game === 'Apex Legends' ? 'second-agent-apex' : 'second-agent' : '' } style={{width:'100px',margin:'5px'}} />
+                                    </div>
+                                ))}
+                                </Row>
+                                </>
                             </div>
                         </center>
                     </div>
