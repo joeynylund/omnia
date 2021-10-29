@@ -2,20 +2,23 @@ import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import SmallFooter from '../components/SmallFooter';
 import { firestore } from '../config/firebase';
-import { Container, Row, Col, Form, FormFeedback, FormGroup, Input, Button, Label } from 'reactstrap';
+import { Container, Row, Col, Form, FormFeedback, FormGroup, Input, Button, Label, UncontrolledAlert } from 'reactstrap';
 import { useAuth } from "../config/context"
 import { Link, useHistory } from "react-router-dom"
 
 function UpdateProfile() {
     const history = useHistory()
     const db = firestore.collection('games');
+    const [alertMessage, setAlertMessage] = useState('');
     const [games, setGames] = useState([]);
     const [agents, setAgents] = useState([]);
+    const [gameAgents, setGameAgents] = useState();
+    const [initialGame, setInitialGame] = useState('');
     const [profile, setProfile] = useState({});
     const [ignError, setIgnError] = useState('');
+    const [agentsError, setAgentsError] = useState('');
     const [files, setFiles] = useState('');
     const { currentUser } = useAuth();
-    const [step, setStep] = useState(0);
 
     var roles = ["IGL","SUPPORT","RECON","ENTRY FRAG","LURKER","FLEX","CROWD CONTROL"];
 
@@ -39,41 +42,104 @@ function UpdateProfile() {
     }
 
     function handleFinish() {
-        firestore.collection('player_accounts').doc(currentUser.uid).set({
-            player_id: currentUser.uid,
-            game: profile.game,
-            primary_agent: profile.mainAgent,
-            secondary_agent: profile.secondAgent,
-            ign: profile.ign,
-            role: profile.role,
-            profile_image: files
-        })
-        setStep(step + 1)
+        var validation = 0;
+
+        if(initialGame === profile.game) {
+            if(gameAgents.main === undefined || gameAgents.second === undefined) {
+                setAgentsError('You must select a Main & Secondary agent.')
+            } else {
+                validation++
+            }
+        } else {
+            if(gameAgents.third === undefined || gameAgents.fourth === undefined) {
+                setAgentsError('You must select a Main & Secondary agent.')
+            } else {
+                validation++
+            }
+        }
+
+        if(profile.ign === '' || profile.ign === ' ') {
+            setIgnError('Your IGN cannot be blank')
+        } else {
+            validation++
+        }
+
+        if(validation === 2) {
+            if(initialGame === profile.game) {
+                var one = gameAgents.main;
+                var two = gameAgents.second;
+            } else {
+                var one = gameAgents.third;
+                var two = gameAgents.fourth;
+            }
+            firestore.collection('player_accounts').doc(currentUser.uid).set({
+                player_id: currentUser.uid,
+                game: profile.game,
+                primary_agent: one,
+                secondary_agent: two,
+                ign: profile.ign,
+                role: profile.role,
+                profile_image: files
+            })
+            window.scrollTo(0,0);
+            setAlertMessage('success')
+        } else {
+            window.scrollTo(0,0);
+            setAlertMessage('fail')
+        }
+        
     }
 
     function selectAgent(agent) {
-        if(profile.mainAgent === undefined) {
-            setProfile({
-                ...profile,
-                mainAgent: agent
-            })
-        } else if(profile.mainAgent !== undefined) {
-            setProfile({
-                ...profile,
-                secondAgent: agent
-            })
+        setAgentsError('');
+        if(initialGame === profile.game){
+            if(gameAgents.main === undefined) {
+                setGameAgents({
+                    ...gameAgents,
+                    main: agent
+                })
+            } else if(gameAgents.main !== undefined) {
+                setGameAgents({
+                    ...gameAgents,
+                    second: agent
+                })
+            }
+            if(gameAgents.main === agent) {
+                setGameAgents({
+                    ...gameAgents,
+                    main: undefined
+                })
+            } else if(gameAgents.second === agent) {
+                setGameAgents({
+                    ...gameAgents,
+                    second: undefined
+                })
+            }
+        } else {
+            if(gameAgents.third === undefined) {
+                setGameAgents({
+                    ...gameAgents,
+                    third: agent
+                })
+            } else if(gameAgents.third !== undefined) {
+                setGameAgents({
+                    ...gameAgents,
+                    fourth: agent
+                })
+            }
+            if(gameAgents.third === agent) {
+                setGameAgents({
+                    ...gameAgents,
+                    third: undefined
+                })
+            } else if(gameAgents.fourth === agent) {
+                setGameAgents({
+                    ...gameAgents,
+                    fourth: undefined
+                })
+            }
         }
-        if(profile.mainAgent === agent) {
-            setProfile({
-                ...profile,
-                mainAgent: undefined
-            })
-        } else if(profile.secondAgent === agent) {
-            setProfile({
-                ...profile,
-                secondAgent: undefined
-            })
-        }
+        
     }
 
     function getGames() {
@@ -96,6 +162,12 @@ function UpdateProfile() {
                 firestore.collection('player_accounts').doc(currentUser.uid).get()
                 .then((querySnapshot3) => {
                     setProfile(querySnapshot3.data())
+                    setGameAgents({
+                        main: querySnapshot3.data().primary_agent,
+                        second: querySnapshot3.data().secondary_agent
+                    })
+                    setInitialGame(querySnapshot3.data().game)
+                    setFiles(querySnapshot3.data().profile_image)
                 });
             })
                 .catch((error) => {
@@ -130,6 +202,7 @@ function UpdateProfile() {
                 <Container>
                     <div style={{padding:'5% 0px'}}>
                         <center>
+                            {alertMessage === 'success'? <div style={{display:'inline-block',backgroundColor:'mediumspringgreen',padding:'10px',borderRadius:'10px',marginBottom:'15px'}}><p style={{margin:'0'}}><strong>Success!</strong> Your profile has been updated! <Link style={{textDecoration:'underline', color:'#000'}} to={"/profile/" + currentUser.displayName}><u>View Profile</u></Link></p></div> : alertMessage === 'fail' ? <div style={{display:'inline-block',backgroundColor:'indianred',padding:'10px',borderRadius:'10px',marginBottom:'15px'}}><p style={{margin:'0'}}><strong>Uh oh!</strong> Looks like you have some errors to fix!</p></div> : null}
                             <h2 style={{fontWeight:'900'}}>Update Your Athlete Profile</h2>
                             <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
                                 <>
@@ -147,153 +220,56 @@ function UpdateProfile() {
                                 <br/>
                                 <>
                                 <h5 style={{margin:'0'}}>Main & Secondary Agents</h5>
+                                {agentsError !== '' && <p style={{margin:'0',color:'red'}}>You must select a main & secondary agent.</p>}
                                 <Row style={{justifyContent:'center'}}>
-                                {agents && agents.filter(agent => agent.game === profile.game ).map((agent) => (
-                                    <div className={profile.primary_agent === agent.name ? 'main' : profile.secondary_agent === agent.name ? 'second' : '' } onClick={() => selectAgent(agent.name)} style={{width:'100px',margin:'5px',display:'inline-block'}}>
-                                        <img src={'data:image/jpeg;base64,' + agent.image} className={profile.primary_agent === agent.name ? profile.game === 'Apex Legends' ? 'main-agent-apex' : 'main-agent' : profile.secondary_agent === agent.name ? profile.game === 'Apex Legends' ? 'second-agent-apex' : 'second-agent' : '' } style={{width:'100px',margin:'5px'}} />
+                                {gameAgents && agents.filter(agent => agent.game === profile.game ).map((agent) => (
+                                    <div className={gameAgents.main === agent.name || gameAgents.third === agent.name  ? 'main-update' : gameAgents.second === agent.name || gameAgents.fourth === agent.name ? 'second-update' : '' } onClick={() => selectAgent(agent.name)} style={{width:'100px',margin:'5px',display:'inline-block'}}>
+                                        <img src={'data:image/jpeg;base64,' + agent.image} className={gameAgents.main === agent.name || gameAgents.third === agent.name ? profile.game === 'Apex Legends' ? 'main-agent-apex-update' : 'main-agent-update' : gameAgents.second === agent.name || gameAgents.fourth === agent.name ? profile.game === 'Apex Legends' ? 'second-agent-apex-update' : 'second-agent-update' : '' } style={{width:'100px',margin:'5px'}} />
                                     </div>
                                 ))}
                                 </Row>
                                 </>
-                            </div>
-                        </center>
-                    </div>
-                    {step === 1 &&
-                    <div style={{padding:'5% 0px'}}>
-                        <center>
-                            <h2 style={{fontWeight:'900'}}>Update Your Athlete Profile</h2>
-                            <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
-                                <h5 style={{margin:'0'}}>Which of the supported Omnia titles do you primarily compete in?</h5>
-                                <p><i>Providing this information will determine the rest of your Profile setup</i></p>
-                                {games && games.map((game) => (
-                                    <img src={'data:image/jpeg;base64,' + game.image} onClick={() => setProfile({...profile, 'game': game.name})} style={{width:'200px',margin:'15px',borderRadius:'10px', outline: profile.game === game.name ? '5px solid #000' : 'none'}} />
-                                ))}
-                            </div>
-                            <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px',width:'200px'}} onClick={() => setStep(step + 1)} disabled={profile.game === undefined ? true : false} size="lg">Next</Button>
-                        </center>
-                    </div>}
-                    {step === 1 && 
-                    <div style={{padding:'5% 0px'}}>
-                        <center>
-                            <h2 style={{fontWeight:'900'}}>Athlete Profile</h2>
-                            <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
-                                <h5 style={{margin:'0'}}>Who do you play as?</h5>
-                                <p><i>Select your primary (main) agent and a secondary agent</i></p>
-                                {agents && agents.filter(agent => agent.game === profile.game ).map((agent) => (
-                                    <div className={profile.mainAgent === agent.name ? 'main' : profile.secondAgent === agent.name ? 'second' : '' } onClick={() => selectAgent(agent.name)} style={{width:'100px',margin:'5px',display:'inline-block'}}>
-                                        <img src={'data:image/jpeg;base64,' + agent.image} className={profile.mainAgent === agent.name ? profile.game === 'Apex Legends' ? 'main-agent-apex' : 'main-agent' : profile.secondAgent === agent.name ? profile.game === 'Apex Legends' ? 'second-agent-apex' : 'second-agent' : '' } style={{width:'100px',margin:'5px'}} />
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="profile-btn-div">
-                            <Button className="profile-back-btn" style={{backgroundColor:'#616161',height:'50px',width:'200px'}} onClick={() => {
-                                setStep(step - 1);
-                                setProfile({
-                                    ...profile,
-                                    mainAgent: undefined,
-                                    secondAgent: undefined
-                                })
-                                }} size="lg">Back</Button>
-                            <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px',width:'200px'}} onClick={() => setStep(step + 1)} disabled={profile.mainAgent === undefined || profile.secondAgent === undefined ? true : false} size="lg">Next</Button>
-                                </div>
-                        </center>
-                    </div>
-                    }
-                    {step === 2  && 
-                    <div style={{padding:'5% 0px'}}>
-                        <center>
-                            <h2 style={{fontWeight:'900'}}>Athlete Profile</h2>
-                            <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
-                                <h5 style={{margin:'0'}}>What is your IGN (In Game Name) for {profile.game}?</h5>
-                                <p><i>Provide your in game name for {profile.game}</i></p>
+                                <br/>
+                                <>
+                                <h5 style={{margin:'0'}}>IGN (In Game Name) for {profile.game}</h5>
+                                {ignError !== '' && <p style={{margin:'0',color:'red'}}>Your IGN cannot be blank.</p>}
                                 <FormGroup style={{marginTop:'10px'}}>
-                                    <Input type="text" id="ign" value={profile.ign} onChange={(e) => setProfile({...profile, ign: e.target.value})} style={{height:'50px',width:'400px',maxWidth:'100%'}} invalid={ ignError === '' ? false : true}/>
+                                    <Input type="text" id="ign" value={profile.ign} onChange={(e) => {
+                                        setIgnError('')
+                                        setProfile({...profile, ign: e.target.value})
+                                    }} style={{height:'50px',width:'400px',maxWidth:'100%'}} invalid={ ignError === '' ? false : true}/>
                                     <FormFeedback style={{width:'100%',textAlign:'left'}}>{ignError}</FormFeedback>
                                 </FormGroup>
-                            </div>
-                            <div className="profile-btn-div">
-                            <Button className="profile-back-btn" style={{backgroundColor:'#616161',height:'50px',width:'200px'}} onClick={() => {
-                                setStep(step - 1);
-                                setProfile({
-                                    ...profile,
-                                    ign: undefined
-                                })
-                                }} size="lg">Back</Button>
-                            <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px',width:'200px'}} onClick={() => setStep(step + 1)} disabled={profile.ign === undefined || profile.ign === null ? true : false} size="lg">Next</Button>
-                            </div>
-                        </center>
-                    </div>
-                    }
-                    {step === 3  && 
-                    <div style={{padding:'5% 0px'}}>
-                        <center>
-                            <h2 style={{fontWeight:'900'}}>Athlete Profile</h2>
-                            <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
-                                <h5 style={{margin:'0'}}>Which best describes your role in a team composition?</h5>
-                                <p><i>Your selected role will be displayed on your Athlete Profile</i></p>
+                                </>
+                                <br />
+                                <>
+                                <h5 style={{margin:'0'}}>Team Role</h5>
                                 <Row style={{justifyContent:'center'}}>
-                                {roles.map(player_role => (
+                                {profile.role !== undefined && roles.map(player_role => (
                                     <Col md="3" style={{padding:'10px'}}>
-                                        <div className={profile.role === player_role ? 'role-selected' : 'role'} onClick={() => setProfile({...profile,role: player_role})}>
+                                        <div className={profile.role.toUpperCase() === player_role ? 'role-selected' : 'role'} onClick={() => setProfile({...profile,role: player_role})}>
                                             {player_role}
                                         </div>
                                     </Col>
                                 ))}
                                 </Row>
-                            </div>
-                            <div className="profile-btn-div">
-                            <Button className="profile-back-btn" style={{backgroundColor:'#616161',height:'50px',width:'200px'}} onClick={() => {
-                                setStep(step - 1);
-                                setProfile({
-                                    ...profile,
-                                    role: undefined
-                                })
-                                }} size="lg">Back</Button>
-                            <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px',width:'200px'}} onClick={() => setStep(step + 1)} disabled={profile.role === undefined || profile.role === null ? true : false} size="lg">Next</Button>
-                            </div>
-                        </center>
-                    </div>
-                    }
-                    {step === 4  && 
-                    <div style={{padding:'5% 0px'}}>
-                        <center>
-                            <h2 style={{fontWeight:'900'}}>Athlete Profile</h2>
-                            <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
-                                <h5 style={{margin:'0'}}>Submit an Athlete Profile Image</h5>
-                                <p><i>Show the Omnia metaverse who you are and make your profile more personal. <br />Recommended size is 400x500 pixels.</i></p>
+                                </>
+                                <br />
+                                <>
+                                <h5 style={{margin:'0'}}>Athlete Profile Image</h5>
+                                <br/>
                                 <input type="file" id="profile-image" accept="image/png, image/gif, image/jpeg" onChange={handleChange} />
                                 <br /><br />
                                 {files && <>
                                 <p>Here is how your image will look on your profile:</p>
                                 <div style={{width:'300px',height:'400px',backgroundImage:`url(${files})`,backgroundPosition:'center',backgroundSize:'cover',backgroundRepeat:'no-repeat',backgroundColor:'#919191',borderRadius:'10px',outline:'2px solid #000'}}></div>
                                 </>}
+                                </>
                             </div>
-                            <div className="profile-btn-div">
-                            <Button className="profile-back-btn" style={{backgroundColor:'#616161',height:'50px',width:'200px'}} onClick={() => {
-                                setStep(step - 1);
-                                setFiles('');
-                                setProfile({
-                                    ...profile,
-                                    role: undefined
-                                })
-                                }} size="lg">Back</Button>
-                            <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px',width:'200px'}} onClick={handleFinish} size="lg">Finish</Button>
-                            </div>
+                            <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px'}} onClick={handleFinish} size="lg">Update Profile</Button>
                         </center>
                     </div>
-                    }
-                    {step === 5  && 
-                    <div style={{padding:'5% 0px'}}>
-                        <center>
-                            <h2 style={{fontWeight:'900'}}>Athlete Profile</h2>
-                            <div style={{backgroundColor:'#fff',padding:'40px 20px',borderRadius:'10px',maxWidth:'1000px',border:'1px solid #ccc'}}>
-                                <h5 style={{margin:'0'}}>Your Athlete Profile has been created!</h5>
-                                <p><i>Now it's time to show it off and earn some medals to display</i></p>
-                                <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px'}} onClick={handleFinish} size="lg">View {profile.game} Tournaments!</Button>
-                            </div>
-                        </center>
-                    </div>
-                    }
+                    
                 </Container>
             </div>
         <SmallFooter />

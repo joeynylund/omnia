@@ -156,8 +156,8 @@ function CreateProfile() {
                                 setStep(step - 1);
                                 setProfile({
                                     ...profile,
-                                    mainAgent: undefined,
-                                    secondAgent: undefined
+                                    primary_agent: undefined,
+                                    secondary_agent: undefined
                                 })
                                 }} size="lg">Back</Button>
                             <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px',width:'200px'}} onClick={() => setStep(step + 1)} disabled={profile.mainAgent === undefined || profile.secondAgent === undefined ? true : false} size="lg">Next</Button>
@@ -200,7 +200,7 @@ function CreateProfile() {
                                 <Row style={{justifyContent:'center'}}>
                                 {roles.map(player_role => (
                                     <Col md="3" style={{padding:'10px'}}>
-                                        <div className={profile.role === player_role ? 'role-selected' : 'role'} onClick={() => setProfile({...profile,role: player_role})}>
+                                        <div className={profile.role === player_role ? 'role-selected' : 'role'} onClick={() => setProfile({...profile,role: player_role.toUpperCase()})}>
                                             {player_role}
                                         </div>
                                     </Col>

@@ -10,10 +10,12 @@ import {
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import Profile from './pages/Profile';
 import CreateProfile from './pages/CreateProfile';
 import UpdateProfile from './pages/UpdateProfile';
 import Admin from './pages/Admin';
 import Teams from './pages/Teams';
+import Events from './pages/Events';
 import { AuthProvider } from './config/context';
 
 function App() {
@@ -28,6 +30,9 @@ function App() {
           <Route exact path="/login">
             <Login />
           </Route>
+          <Route path="/profile/:username">
+            <Profile />
+          </Route>
           <Route exact path="/create-profile">
             <CreateProfile />
           </Route>
@@ -39,6 +44,9 @@ function App() {
           </Route>
           <Route exact path="/admin">
             <Admin />
+          </Route>
+          <Route exact path="/events">
+            <Events />
           </Route>
           <Route exact path="/teams">
             <Teams />
