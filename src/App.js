@@ -16,6 +16,7 @@ import UpdateProfile from './pages/UpdateProfile';
 import Admin from './pages/Admin';
 import Teams from './pages/Teams';
 import Events from './pages/Events';
+import Event from './pages/Event';
 import { AuthProvider } from './config/context';
 
 function App() {
@@ -47,6 +48,9 @@ function App() {
           </Route>
           <Route exact path="/events">
             <Events />
+          </Route>
+          <Route path="/e/:id">
+            <Event />
           </Route>
           <Route exact path="/teams">
             <Teams />

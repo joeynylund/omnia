@@ -6,20 +6,25 @@ import banner from '../assets/omnia-banner.png';
 import apex from '../assets/apex.jpg';
 import valorant from '../assets/valorant.jpg';
 import { firestore } from '../config/firebase';
-import { Link, useHistory } from "react-router-dom"
+import { Link, useHistory, useParams } from "react-router-dom"
 
-function Events () {
 
+function Home() {
+
+    const history = useHistory()
+    let { id } = useParams();
     const [events, setEvents] = useState([]);
 
     useEffect(() => {
+
+        alert(id)
 
         firestore.collection('events').get()
             .then((querySnapshot) => {
                 var eventsArray = [];
                 querySnapshot.forEach((doc) => {
                     // doc.data() is never undefined for query doc snapshots
-                    eventsArray.push({...doc.data(), id: doc.id})
+                    eventsArray.push(doc.data())
                 });
                 setEvents(eventsArray)
             })
@@ -57,11 +62,9 @@ function Events () {
                                     <CardText>
                                         {event.eventoverview}
                                     </CardText>
-                                    <Link to={'/e/' + event.id}>
                                     <Button>
                                         VIEW
                                     </Button>
-                                    </Link>
                                     </CardBody>
                                 </Card>
                             </Col>
@@ -75,4 +78,4 @@ function Events () {
   );
 }
 
-export default Events;
+export default Home;
