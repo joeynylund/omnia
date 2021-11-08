@@ -1,12 +1,13 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
-import { Container, Row, Col, Form, FormText,FormFeedback, FormGroup, Input, Button, Label } from 'reactstrap';
+import { Container, Form, FormFeedback, FormGroup, Input, Button, Label } from 'reactstrap';
 import banner from '../assets/omnia_full_dark.png';
 import { firestore, auth } from '../config/firebase';
 import { Link, useHistory } from "react-router-dom"
+import { useAuth } from "../config/context";
 
 function SignUp () {
-    const db = firestore.collection('users');
+    const { currentUser } = useAuth();
     const history = useHistory()
     const [credentials, setCredentials] = useState({
         firstName: '',
@@ -26,6 +27,7 @@ function SignUp () {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [passwordConfirmError, setPasswordConfirmError] = useState('');
+    const [users, setUsers] = useState([]);
 
     const handleChange = (e) => {
         const {id, value} = e.target
@@ -110,17 +112,13 @@ function SignUp () {
         if(credentials.username.trim() === '') {
             setUsernameError('Username is required')
         } else {
-            var docRef = db.where('username', '==', credentials.username)
-            await docRef.get().then(function(querySnapshot) {
-                if (!querySnapshot.empty) {
-                    setUsernameError('That username is taken')
-                }
-                else {
-                    validation++
-                }
-            }).catch((error) => {
-                console.log("Error getting document:", error);
-            });
+            if (users.includes(credentials.username.toLowerCase())) {
+                setUsernameError('That username is taken')
+            }
+            else {
+                validation++
+            }
+            
             
         }
 
@@ -156,7 +154,7 @@ function SignUp () {
                 user.user.updateProfile({
                     displayName: credentials.username
                 })
-                db.doc(user.user.uid).set({
+                firestore.collection('users').doc(user.user.uid).set({
                     username: credentials.username,
                     birthday: credentials.birthday,
                     name: credentials.firstName + ' ' + credentials.lastName,
@@ -169,10 +167,29 @@ function SignUp () {
             .catch((error) => {
                 console.log(error)
                 console.log(error.code)
+                if(error.code === 'auth/email-already-in-use') {
+                    setEmailError('That email is already being used by another account')
+                }
             });
         }
         
     }
+
+    useEffect(() => {
+        if(currentUser !== null) {
+            history.push('/login')
+        } else {
+            firestore.collection('users').get()
+            .then((querySnapshot2) => {
+                var listofusers = [];
+                querySnapshot2.forEach((doc2) => {
+                    listofusers.push(doc2.data().username.toLowerCase())
+                })
+                console.log(listofusers)
+                setUsers(listofusers)
+            })
+        }
+    }, [])
   return (
     <>
         <Header />

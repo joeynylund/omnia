@@ -1,38 +1,30 @@
-const functions = require("firebase-functions");
-const nodemailer = require('nodemailer');
+const functions = require('firebase-functions');
+const express = require('express');
+const app = express();
+// The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-exports.sendWelcomeEmail = functions.auth.user().onCreate((user) => {
-  const email = user.email; // The email of the user.
-  const displayName = user.displayName; // The display name of the user.
-
-  var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'nylundja@gmail.com',
-      pass: 'Nylund3221'
-    }
-});
-  
-var mailOptions = {
-    from: 'nylundja@gmail.com',
-    to: email,
-    subject: 'Sending Email using Node.js',
-    text: 'That was easy!'
-};
-  
-transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
+app.get('/admin/:email', (req,res) => {
+  var email = req.params.email;
+  admin.auth().getUserByEmail(email).then((userRecord) => {
+    if(userRecord.customClaims['admin'] === true) {
+      res.send('This person is already an admin!')
     } else {
-      console.log('Email sent: ' + info.response);
+      res.send('New admin added!')
+      return admin.auth().setCustomUserClaims(userRecord.uid, {
+        admin: true,
+      });
     }
-});
+  })
+  .catch((error) => {
+    console.log('Error fetching user data:', error);
+    res.send(error)
+  });
+})
 
-});
+const api = functions.https.onRequest(app)
 
-
-
-
-
+module.exports = {
+  api
+}

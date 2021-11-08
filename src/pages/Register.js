@@ -6,7 +6,7 @@ import { firestore } from '../config/firebase';
 import { Link, useHistory, useParams } from "react-router-dom"
 
 
-function Event() {
+function Register() {
 
     const history = useHistory()
     let { id } = useParams();
@@ -24,6 +24,8 @@ function Event() {
         firestore.collection('events').doc(id).get()
             .then((doc) => {
                 if(doc.exists === true) {
+                    // doc.data() is never undefined for query doc snapshots
+                    
                     setEvent({
                         ...doc.data(),
                     })
@@ -31,7 +33,7 @@ function Event() {
                     alert('No event found')
                 }
             })
-            .catch((error) => {
+                .catch((error) => {
                 console.log("Error getting documents: ", error);
             });
 
@@ -92,4 +94,4 @@ function Event() {
   );
 }
 
-export default Event;
+export default Register;

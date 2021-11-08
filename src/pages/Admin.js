@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import Header from '../components/Header';
+import AdminHeader from '../components/AdminHeader';
 import Footer from '../components/SmallFooter';
 import { Container, Row, Col } from 'reactstrap';
 import { firestore, auth } from '../config/firebase';
@@ -14,34 +14,30 @@ function Admin() {
     useEffect(() => {
         if(currentUser) {
             auth.currentUser.getIdTokenResult()
-        .then((idTokenResult) => {
-        // Confirm the user is an Admin.
-            if (!!idTokenResult.claims.admin) {
-                // Show admin UI.
-                console.log('Admin')
-            } else {
-                // Show regular user UI.
-                console.log('Not Admin')
-                history.push('/')
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+            .then((idTokenResult) => {
+                if (!!idTokenResult.claims.admin) {
+                    console.log('Admin')
+                } else {
+                    console.log('Not Admin')
+                    history.push('/')
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         } else {
             history.push('/')
         }
-        
     },[])
 
   return (
     <>
-        <Header />
+        <AdminHeader />
         <div className='select-game'>
             <Container>
                 <div className='section'>
                     <Row>
-                        <h3 style={{fontWeight:'800'}}>Admin</h3>
+                        <h3 style={{fontWeight:'800'}}>Admin Panel</h3>
                     </Row>
                 </div>
             </Container>

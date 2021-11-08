@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import discord_cta from '../assets/discord_cta.png';
 import {
   Button,
   Container
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
 const Footer = (props) => {
@@ -13,14 +12,14 @@ const Footer = (props) => {
   return (
       <>
     <div style={{backgroundColor:'#121212',display:'flex',justifyContent:'center',width:'100%',padding:'40px 0px'}}>
-        <div>
+        <Container>
             <center>
             <img src={discord_cta} width='400' style={{maxWidth:'100%'}} />
             
             <p style={{textAlign:'center',color:'#fff'}}>Our discord houses our competitive community Get involved!</p>
             <Button style={{backgroundColor:'#fff',color:'#121212',padding:'10px 40px'}} size='md'>Join The Discord</Button>
             </center>
-        </div>
+        </Container>
         
     </div>
     <div style={{display:'flex',justifyContent:'center',width:'100%',padding:'40px 0px'}}>

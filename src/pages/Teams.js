@@ -2,10 +2,12 @@ import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Container, Row, Col, Button } from 'reactstrap';
-import { firestore, auth } from '../config/firebase';
-import logo from '../assets/omnia-small.png';
-import { useHistory } from "react-router-dom";
+import { firestore } from '../config/firebase';
+import defaultLogo from '../assets/default-team-logo.png';
+import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "../config/context";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCrown } from '@fortawesome/free-solid-svg-icons';
 
 function Teams () {
 
@@ -14,44 +16,47 @@ function Teams () {
     const [teams, setTeams] = useState([]);
 
     useEffect(() => {
-
-        firestore.collection('teams').where('members','array-contains','Nylunddd').get().then((querySnapshot) => {
-            var userTeams = [];
-            querySnapshot.forEach((doc) => {
-                console.log(doc.data().name);
-                userTeams.push({
-                    id: doc.id,
-                    name: doc.data().name,
-                    logo: doc.data().logo,
-                    members: doc.data().members,
-                    game: doc.data().game,
-                    captain: doc.data().captain
-                })
+        if(currentUser === null) {
+            history.push('/login')
+        } else {
+            firestore.collection("teams")
+            .where("members", "array-contains", currentUser.uid).get().then((querySnapshot) => {
+                var userTeams = [];
+                querySnapshot.forEach((doc) => {
+                    userTeams.push({
+                        id: doc.id,
+                        name: doc.data().name,
+                        logo: doc.data().logo,
+                        members: doc.data().members,
+                        captain: doc.data().captain
+                    })
+                });
+                setTeams(userTeams)
             });
-            setTeams(userTeams)
-        });
-
+        }
     }, [])
 
   return (
     <>
         <Header />
-        <div style={{backgroundColor:'#000',padding:'20px',display:'flex',justifyContent:'center'}}><h1 style={{color:'#fff',fontWeight:'800'}}>{currentUser.displayName.toUpperCase()}'s TEAMS</h1></div>
+        <div style={{backgroundColor:'#000',padding:'20px',display:'flex',justifyContent:'center'}}><h1 style={{color:'#fff',fontWeight:'800',margin:'0'}}>{currentUser.displayName.toUpperCase()}'s TEAMS</h1></div>
         <div className='select-game'>
             <Container>
                 <div className='section'>
                     <Row style={{display:'flex', justifyContent:'center'}}>
                         {teams.length > 0 ? teams.map((team) => (
-                            <Col md="3" style={{display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer'}}>
-                                <div style={{width:'250px', height:'250px', backgroundColor:'#eee', display:'flex', justifyContent:'center', alignItems:'center', borderRadius:'10px'}}>
-                                    <img src={logo} style={{maxWidth:'100%'}} />
+                            <Col md="3" style={{display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer'}} onClick={() => history.push('/teams/' + team.name)}>
+                                <div style={{width:'300px', aspectRatio:'1/1', maxWidth:'100%', backgroundColor:'#eee', display:'flex', justifyContent:'center', alignItems:'center', borderRadius:'10px'}}>
+                                    <img src={team.logo === '' ? defaultLogo : team.logo} style={{maxWidth:'100%',borderRadius:'10px',aspectRatio:'1/1',objectFit:'cover'}} />
                                 </div>
-                                <h3 style={{marginTop:'15px'}}>{team.name}</h3>
+                                <h3 style={{marginTop:'15px'}}>{team.captain === currentUser.uid ? <FontAwesomeIcon icon={faCrown} style={{color:'goldenrod',marginRight:'10px'}} /> : ''}{team.name}</h3>
                             </Col>
                         )) : <h2 style={{textAlign:'center'}}>You are not apart of any teams. Create one below!</h2>}
                     </Row>
                     <center>
-                        <Button style={{backgroundColor:'#121212',color:'#fff',padding:'10px 40px',marginTop:'20px',fontWeight:'800'}} size='lg'>+ NEW TEAM</Button>
+                        <Link to={'/teams/create'}>
+                            <Button style={{backgroundColor:'#121212',color:'#fff',padding:'10px 40px',marginTop:'20px',fontWeight:'800'}} size='lg'>+ NEW TEAM</Button>
+                        </Link>
                     </center>
                 </div>
             </Container>

@@ -17,6 +17,7 @@ import {
 import {
   Link, useHistory
 } from "react-router-dom";
+import { firestore } from '../config/firebase';
 import { useAuth } from "../config/context"
 
 const Header = (props) => {
@@ -33,6 +34,17 @@ const Header = (props) => {
     logout()
     .then(() => {
       history.push('/login')
+    })
+  }
+
+  const handleProfile = () => {
+    firestore.collection('player_accounts').doc(currentUser.uid).get()
+    .then((docSnapshot) => {
+      if(docSnapshot.exists) {
+        history.push('/profile/' + currentUser.displayName)
+      } else {
+        history.push('/create-profile')
+      }
     })
   }
 
@@ -70,12 +82,14 @@ const Header = (props) => {
               </div>
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem onClick={() => history.push('/profile/' + currentUser.displayName)}>
+              <DropdownItem onClick={handleProfile}>
                 ATHLETE PROFILE
               </DropdownItem>
+              <Link to={'/teams'}>
               <DropdownItem>
                 TEAMS
               </DropdownItem>
+              </Link>
               <DropdownItem>
                 ACCOUNT SETTINGS
               </DropdownItem>

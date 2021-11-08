@@ -2,9 +2,9 @@ import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import SmallFooter from '../components/SmallFooter';
 import { firestore } from '../config/firebase';
-import { Container, Row, Col, Form, FormFeedback, FormGroup, Input, Button, Label } from 'reactstrap';
+import { Container, Row, Col, FormFeedback, FormGroup, Input, Button } from 'reactstrap';
 import { useAuth } from "../config/context"
-import { Link, useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 
 function CreateProfile() {
     const history = useHistory()
@@ -81,7 +81,6 @@ function CreateProfile() {
         .then((querySnapshot) => {
             var supportedGames = [];
             querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
                 supportedGames.push(doc.data())
             });
             setGames(supportedGames)
@@ -89,7 +88,6 @@ function CreateProfile() {
             .then((querySnapshot2) => {
                 var gameAgents = [];
                 querySnapshot2.forEach((doc2) => {
-                    // doc.data() is never undefined for query doc snapshots
                     gameAgents.push(doc2.data())
                 });
                 setAgents(gameAgents)

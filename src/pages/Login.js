@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { Container, Row, Col, Form, FormFeedback, FormGroup, Input, Button, Label } from 'reactstrap';
+import { Container, Form, FormFeedback, FormGroup, Input, Button, Label } from 'reactstrap';
 import { auth } from '../config/firebase';
 import banner from '../assets/omnia_full_dark.png';
 import { useAuth } from "../config/context"

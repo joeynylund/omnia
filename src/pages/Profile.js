@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import SmallFooter from '../components/SmallFooter';
+import defaultPic from '../assets/default-profile-picture.png';
 import { firestore } from '../config/firebase';
-import { Container, Row, Col, Form, FormFeedback, FormGroup, Input, Button, Label } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
 import { useAuth } from "../config/context"
 import { Link, useParams, useHistory } from "react-router-dom"
 
@@ -36,14 +37,7 @@ function UpdateProfile() {
 
     useEffect(() => {
 
-        firestore.collection('player_accounts').doc(currentUser.uid).get()
-            .then((docSnapshot) => {
-                if(docSnapshot.exists) {
-                    checkProfile();
-                } else {
-                    history.push('/create-profile')
-                }
-            })
+        checkProfile();
         
       }, [])
   return (
@@ -58,7 +52,7 @@ function UpdateProfile() {
                                 <Row style={{backgroundColor:'#fff',borderRadius:'10px',margin:'0',marginTop:'20px',alignItems:'center'}}>
                                     <Col md='12' lg='4' style={{padding:'20px'}}>
                                         <div style={{borderRadius:'10px',border:'2px solid #000'}}>
-                                            <img src={files} style={{maxWidth:'100%',borderRadius:'10px',aspectRatio:'4/5',objectFit:'contain'}} />
+                                            <img src={profile.profile_image === '' ? defaultPic : files} style={{maxWidth:'100%',borderRadius:'10px',aspectRatio:'4/5',objectFit:'cover'}} />
                                         </div>
                                     </Col>
                                     <Col md='12' lg='8' style={{padding:'20px'}}>

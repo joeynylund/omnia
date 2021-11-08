@@ -15,9 +15,15 @@ import CreateProfile from './pages/CreateProfile';
 import UpdateProfile from './pages/UpdateProfile';
 import Admin from './pages/Admin';
 import Teams from './pages/Teams';
+import CreateTeam from './pages/CreateTeam';
+import TeamInvite from './pages/TeamInvite';
 import Events from './pages/Events';
 import Event from './pages/Event';
 import { AuthProvider } from './config/context';
+import TeamDetails from './pages/TeamDetails';
+import Register from './pages/Register';
+import AdminEvents from './pages/admin/Events';
+import AdminEvent from './pages/admin/Event';
 
 function App() {
   
@@ -46,7 +52,7 @@ function App() {
           <Route exact path="/admin">
             <Admin />
           </Route>
-          <Route exact path="/events">
+          <Route exact path="/events/:game">
             <Events />
           </Route>
           <Route path="/e/:id">
@@ -54,6 +60,24 @@ function App() {
           </Route>
           <Route exact path="/teams">
             <Teams />
+          </Route>
+          <Route exact path="/teams/create">
+            <CreateTeam />
+          </Route>
+          <Route path="/i/:id">
+            <TeamInvite />
+          </Route>
+          <Route path="/teams/:id">
+            <TeamDetails />
+          </Route>
+          <Route path="/register/:id">
+            <Register />
+          </Route>
+          <Route path="/admin/events">
+            <AdminEvents />
+          </Route>
+          <Route path="/admin/event/:id">
+            <AdminEvent />
           </Route>
         </Switch>
     </Router>

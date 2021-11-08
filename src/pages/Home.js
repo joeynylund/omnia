@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row } from 'reactstrap';
 import banner from '../assets/omnia-banner.png';
 import apex from '../assets/apex.jpg';
 import valorant from '../assets/valorant.jpg';
+import { useHistory } from 'react-router-dom'; 
 
 function Home() {
+
+    const history = useHistory();
+
   return (
     <>
         <Header />
@@ -21,8 +25,8 @@ function Home() {
                         <h4 style={{textAlign:'center',fontWeight:'800'}}>Select A Game...</h4>
                     </Row>
                     <Row style={{display:'flex',justifyContent:'center'}}>
-                        <img src={valorant} className='game-cover' alt='Valorant Cover Art' />
-                        <img src={apex} className='game-cover' alt='Apex Legends Cover Art' />
+                        <img src={valorant} className='game-cover' alt='Valorant Cover Art' onClick={() => history.push('/events/Valorant')} />
+                        <img src={apex} className='game-cover' alt='Apex Legends Cover Art' onClick={() => history.push('/events/Apex Legends')} />
                     </Row>
                 </div>
             </Container>

@@ -1,14 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import AdminHeader from '../../components/AdminHeader';
+import Footer from '../../components/Footer';
 import { Container, Row, Col, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, Button } from 'reactstrap';
-import banner from '../assets/omnia-banner.png';
-import { firestore } from '../config/firebase';
-import { Link, useParams } from "react-router-dom"
+import { firestore, auth } from '../../config/firebase';
+import { useAuth } from "../../config/context";
+import { Link, useHistory } from "react-router-dom"
 
 function Events() {
 
-    let { game } = useParams();
+    const history = useHistory();
+    const { currentUser } = useAuth();
     const [events, setEvents] = useState([]);
 
     function setDate(startDate) {
@@ -18,24 +19,35 @@ function Events() {
     }
 
     useEffect(() => {
-
-        firestore.collection('events').where('game','==',game).get()
-            .then((querySnapshot) => {
-                var eventsArray = [];
-                querySnapshot.forEach((doc) => {
-                    eventsArray.push({...doc.data(), id: doc.id})
-                });
-                setEvents(eventsArray)
+        if(currentUser) {
+            auth.currentUser.getIdTokenResult()
+            .then((idTokenResult) => {
+                if (!!idTokenResult.claims.admin) {
+                    firestore.collection('events').get()
+                    .then((querySnapshot) => {
+                        var eventsArray = [];
+                        querySnapshot.forEach((doc) => {
+                            eventsArray.push({...doc.data(), id: doc.id})
+                        });
+                        setEvents(eventsArray)
+                    })
+                        .catch((error) => {
+                        console.log("Error getting documents: ", error);
+                    });
+                } else {
+                    history.push('/')
+                }
             })
-                .catch((error) => {
-                console.log("Error getting documents: ", error);
+            .catch((error) => {
+                console.log(error);
             });
-
+        } else {
+            history.push('/')
+        }
     },[])
   return (
     <>
-        <Header />
-        <div style={{backgroundColor:'#000',padding:'20px',display:'flex',justifyContent:'center'}}><img src={banner} width='200' alt='Omnia Competitive Culture Banner' /></div>
+        <AdminHeader />
         <div className='select-game'>
             <Container>
                 <div className='section'>
@@ -64,7 +76,7 @@ function Events() {
                                     <CardText>
                                         {event.eventoverview}
                                     </CardText>
-                                    <Link to={'/e/' + event.id}>
+                                    <Link to={'/admin/event/' + event.id}>
                                     <Button>
                                         VIEW
                                     </Button>

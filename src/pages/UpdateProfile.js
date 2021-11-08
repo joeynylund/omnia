@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import SmallFooter from '../components/SmallFooter';
 import { firestore } from '../config/firebase';
-import { Container, Row, Col, Form, FormFeedback, FormGroup, Input, Button, Label, UncontrolledAlert } from 'reactstrap';
+import { Container, Row, Col, FormFeedback, FormGroup, Input, Button } from 'reactstrap';
 import { useAuth } from "../config/context"
 import { Link, useHistory } from "react-router-dom"
 
