@@ -13,6 +13,8 @@ function UpdateEvent() {
     const [files, setFiles] = useState('');
     let { id } = useParams();
     const [event, setEvent] = useState({});
+    const [teams, setTeams] = useState([]);
+    const [users, setUsers] = useState([]);
     const { currentUser } = useAuth();
 
     const convertBase64 = (file) => {
@@ -26,6 +28,13 @@ function UpdateEvent() {
             reject(error);
           }
         })
+    }
+
+
+    function convertToName(roster) {
+        let res = teams.filter(item => roster.includes(item.id));
+        console.log(roster)
+        return res[0].name;
     }
 
     const handleChange = async (event) => {
@@ -42,8 +51,10 @@ function UpdateEvent() {
                     firestore.collection('events').doc(id).get()
                     .then((doc) => {
                         if(doc.exists === true) {
+                            
                             setEvent({
                                 ...doc.data(),
+
                             })
                         } else {
                             alert('No event found')
@@ -51,6 +62,28 @@ function UpdateEvent() {
                     })
                     .catch((error) => {
                         console.log("Error getting documents: ", error);
+                    });
+                    firestore.collection('teams').get()
+                    .then((querySnapshot2) => {
+                        var allTeams = [];
+                        querySnapshot2.forEach((doc2) => {
+                            allTeams.push({
+                                id: doc2.id,
+                                name: doc2.data().name
+                            })
+                        })
+                        setTeams(allTeams)
+                    });
+                    firestore.collection('users').get()
+                    .then((querySnapshot2) => {
+                        var allUsers = [];
+                        querySnapshot2.forEach((doc2) => {
+                            allUsers.push({
+                                id: doc2.id,
+                                username: doc2.data().username
+                            })
+                        })
+                        setUsers(allUsers)
                     });
                 } else {
                     history.push('/')
@@ -143,7 +176,19 @@ function UpdateEvent() {
                                             <th>Score</th>
                                             <th>Placement</th>
                                         </tr>
-                                        
+                                        {event.team_info !== undefined && teams.length > 0 && users.length > 0 && event.team_info.map((team) => (
+                                            <tr>
+                                                <td>{convertToName(team.id)}</td>
+                                                <td>{team.captain}</td>
+                                                <td>{team.roster.map((member) => {
+                                                    let res = users.filter(item => member.includes(item.id));
+                                                    console.log('user: ' + res[0].username)
+                                                    return <p style={{margin:'0',display:'inline-block'}}>{res[0].username}</p>;
+                                                })}</td>
+                                                <td>{team.score}</td>
+                                                <td>{team.placement}</td>
+                                            </tr>
+                                        ))}
                                     </Table>
                                 </Row>
                                 </>

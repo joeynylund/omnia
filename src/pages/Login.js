@@ -52,10 +52,18 @@ function Login() {
 
         if(validation === 2) {
             auth.signInWithEmailAndPassword(loginCredentials.email, loginCredentials.password).then(() => {
-                history.push('/')
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const product = urlParams.get('redirect')
+                if(product !== null) {
+                    history.push(product)
+                } else {
+                    history.push('/')
+                }
+                
             })
             .catch((error) => {
-                console.log(error.code)
+                console.log(error)
                 if(error.code === 'auth/wrong-password') {
                     setPasswordError('That password is incorrect. Try again.')
                 }

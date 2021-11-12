@@ -299,6 +299,7 @@ a {
   border-radius: 10px;
   cursor: pointer;
   transition: .2s;
+  text-align: center;
 }
 
 .role:hover {
@@ -319,6 +320,7 @@ a {
   cursor: pointer;
   transition: .2s;
   transform: scale(1.05);
+  text-align: center;
 }
 
 .profile-btn-div {
