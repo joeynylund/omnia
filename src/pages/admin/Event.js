@@ -11,6 +11,8 @@ function UpdateEvent() {
     const [profile, setProfile] = useState({});
     const [ignError, setIgnError] = useState('');
     const [files, setFiles] = useState('');
+    const [loading, setLoading] = useState(true)
+    const [updated, setUpdated] = useState(false)
     let { id } = useParams();
     const [event, setEvent] = useState({});
     const [teams, setTeams] = useState([]);
@@ -30,11 +32,34 @@ function UpdateEvent() {
         })
     }
 
-
     function convertToName(roster) {
-        let res = teams.filter(item => roster.includes(item.id));
-        console.log(roster)
-        return res[0].name;
+        if(roster === undefined) {
+
+        } else {
+            let res = teams.filter(item => roster.includes(item.id));
+            return res[0].name;
+        }
+        
+    }
+
+    const scoreChange = (e, index) => {
+        let teamInfo = [...event.team_info];
+        teamInfo[index].score = e.target.value;
+        setEvent({...event,
+            team_info: teamInfo
+        })
+        setUpdated(true)
+        setUpdated(false)
+    }
+
+    const placementChange = (e, index) => {
+        let teamInfo = [...event.team_info];
+        teamInfo[index].placement = e.target.value;
+        setEvent({...event,
+            team_info: teamInfo
+        })
+        setUpdated(true)
+        setUpdated(false)
     }
 
     const handleChange = async (event) => {
@@ -43,18 +68,16 @@ function UpdateEvent() {
         setFiles(base64)
     }
 
-    useEffect(() => {
+    useEffect( async() => {
         if(currentUser) {
-            auth.currentUser.getIdTokenResult()
+            await auth.currentUser.getIdTokenResult()
             .then((idTokenResult) => {
                 if (!!idTokenResult.claims.admin) {
                     firestore.collection('events').doc(id).get()
                     .then((doc) => {
                         if(doc.exists === true) {
-                            
                             setEvent({
                                 ...doc.data(),
-
                             })
                         } else {
                             alert('No event found')
@@ -89,15 +112,16 @@ function UpdateEvent() {
                     history.push('/')
                 }
             });
+            setLoading(false)
         }
         
-      }, [])
+      }, [updated])
   return (
     <>
         <AdminHeader />
             <div className='select-game' style={{minHeight:'100vh'}}>
                 <Container>
-                    <div style={{padding:'5% 0px'}}>
+                    {loading === true ? null : <div style={{padding:'5% 0px'}}>
                         <center>
                             <h2 style={{fontWeight:'900'}}>Edit Event Details</h2>
                                 <>
@@ -176,17 +200,16 @@ function UpdateEvent() {
                                             <th>Score</th>
                                             <th>Placement</th>
                                         </tr>
-                                        {event.team_info !== undefined && teams.length > 0 && users.length > 0 && event.team_info.map((team) => (
-                                            <tr>
+                                        {event.team_info !== undefined && teams.length > 1 && users.length > 0 && event.team_info.map((team,index) => (
+                                            <tr style={{height:'75px'}}>
                                                 <td>{convertToName(team.id)}</td>
                                                 <td>{team.captain}</td>
-                                                <td>{team.roster.map((member) => {
+                                                <td>{team.roster !== undefined && team.roster.map((member) => {
                                                     let res = users.filter(item => member.includes(item.id));
-                                                    console.log('user: ' + res[0].username)
                                                     return <p style={{margin:'0',display:'inline-block'}}>{res[0].username}</p>;
                                                 })}</td>
-                                                <td>{team.score}</td>
-                                                <td>{team.placement}</td>
+                                                <td>{<Input type="text" style={{backgroundColor:'#fff',borderWidth:'1px'}} value={team.score} onChange={(e) => scoreChange(e, index)} />}</td>
+                                                <td>{<Input type="text" style={{backgroundColor:'#fff',borderWidth:'1px'}} value={team.placement} onChange={(e) => placementChange(e, index)} />}</td>
                                             </tr>
                                         ))}
                                     </Table>
@@ -194,7 +217,7 @@ function UpdateEvent() {
                                 </>
                             <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px'}} size="lg">Update Event</Button>
                         </center>
-                    </div>
+                    </div>}
                     
                 </Container>
             </div>

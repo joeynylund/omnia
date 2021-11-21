@@ -49,7 +49,7 @@ const AdminHeader = (props) => {
             <Link to={'/'}>
               <NavbarText style={{padding:'8px',fontWeight:'500',color:'#000',display:'block',textAlign:'center',cursor:'pointer'}}>SERIES</NavbarText>
             </Link>
-            <Link to={'/'}>
+            <Link to={'/admin/events'}>
               <NavbarText style={{padding:'8px',fontWeight:'500',color:'#000',display:'block',textAlign:'center',cursor:'pointer'}}>EVENTS</NavbarText>
             </Link>
             <Link to={'/'}>

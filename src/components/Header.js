@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from '../assets/omnia-small.png';
 import {
   Collapse,
@@ -17,17 +17,15 @@ import {
 import {
   Link, useHistory
 } from "react-router-dom";
-import { firestore } from '../config/firebase';
+import { firestore, auth } from '../config/firebase';
 import { useAuth } from "../config/context"
 
 const Header = (props) => {
 
   const history = useHistory()
-
-  const { currentUser, admin, logout } = useAuth();
-
+  const { currentUser, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-
+  const [isAdmin, setIsAdmin] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
   const handleLogout = () => {
@@ -47,6 +45,17 @@ const Header = (props) => {
       }
     })
   }
+
+  useEffect( async () => {
+    if(currentUser) {
+      await auth.currentUser.getIdTokenResult()
+      .then((idTokenResult) => {
+          if (!!idTokenResult.claims.admin) {
+            setIsAdmin(true)
+          }
+        })
+      }
+  },[])
 
   return (
     <>
@@ -93,6 +102,12 @@ const Header = (props) => {
               <DropdownItem>
                 ACCOUNT SETTINGS
               </DropdownItem>
+              {isAdmin === true && 
+              <Link to={'/admin'}>
+              <DropdownItem>
+                ADMIN
+              </DropdownItem>
+              </Link>}
               <DropdownItem onClick={handleLogout}>
                 LOGOUT
               </DropdownItem>
