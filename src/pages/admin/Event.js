@@ -39,7 +39,6 @@ function UpdateEvent() {
             let res = teams.filter(item => roster.includes(item.id));
             return res[0].name;
         }
-        
     }
 
     const scoreChange = (e, index) => {
@@ -113,6 +112,16 @@ function UpdateEvent() {
                 }
             });
             setLoading(false)
+            await fetch('https://cryptum.halodotapi.com/games/hi/stats/players/Nylunddd/matches',{
+                headers: {
+                    'Authorization': 'Cryptum-Token d9hWQNMqwe6NOFyu30RsLMGQ2Lqr0QFDduDBh9RYZJZG9gR4TG5qt9ozWOp2sFJD',
+                    'Content-Type': 'application/json',
+                    'Cryptum-API-Version': '2.3-alpha'
+                }
+            }).then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+            })
         }
         
       }, [updated])
