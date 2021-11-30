@@ -31,7 +31,7 @@ const Header = (props) => {
   const handleLogout = () => {
     logout()
     .then(() => {
-      history.push('/login')
+      history.replace('/login')
     })
   }
 
@@ -39,9 +39,9 @@ const Header = (props) => {
     firestore.collection('player_accounts').doc(currentUser.uid).get()
     .then((docSnapshot) => {
       if(docSnapshot.exists) {
-        history.push('/profile/' + currentUser.displayName)
+        history.replace('/profile/' + currentUser.displayName)
       } else {
-        history.push('/create-profile')
+        history.replace('/create-profile')
       }
     })
   }

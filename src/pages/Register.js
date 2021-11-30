@@ -224,12 +224,12 @@ function Register() {
                                     {user === true? <>
                                         <center>
                                         <h5 style={{margin:'0'}}>You must be logged in to register for an event!</h5>
-                                        <Button style={{marginTop:'20px',width:'200px',backgroundColor:'#242425',height:'50px'}} onClick={() => history.push('/login?redirect=' + window.location.pathname )}>LOGIN</Button>
+                                        <Button style={{marginTop:'20px',width:'200px',backgroundColor:'#242425',height:'50px'}} onClick={() => history.replace('/login?redirect=' + window.location.pathname )}>LOGIN</Button>
                                     </center>
                                     </> : empty === true ? <>
                                     <center>
                                         <h5 style={{margin:'0'}}>You must be a captain of a team to register for an event!</h5>
-                                        <Button style={{marginTop:'20px',width:'200px',backgroundColor:'#242425',height:'50px'}} onClick={() => history.push('/teams/create')}>CREATE A TEAM</Button>
+                                        <Button style={{marginTop:'20px',width:'200px',backgroundColor:'#242425',height:'50px'}} onClick={() => history.replace('/teams/create')}>CREATE A TEAM</Button>
                                     </center>
                                     </> : <>
                                         <h5 style={{margin:'0'}}>Select Your Team</h5>

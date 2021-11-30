@@ -35,7 +35,7 @@ function TeamCreation () {
                 captain: currentUser.uid,
                 invite_code: uuidv4().slice(0,8)
             }).then(() => {
-                history.push('/teams')
+                history.replace('/teams')
             }).catch((error) => {
                 console.log(error)
             })
@@ -65,7 +65,7 @@ function TeamCreation () {
 
     useEffect(() => {
         if(currentUser === null) {
-            history.push('/login')
+            history.replace('/login')
         } else {
             firestore.collection('teams').get()
             .then((querySnapshot2) => {

@@ -24,6 +24,7 @@ import TeamDetails from './pages/TeamDetails';
 import Register from './pages/Register';
 import AdminEvents from './pages/admin/Events';
 import AdminEvent from './pages/admin/Event';
+import AdminEventCreate from './pages/admin/CreateEvent';
 
 function App() {
   
@@ -73,11 +74,14 @@ function App() {
           <Route path="/register/:id">
             <Register />
           </Route>
-          <Route path="/admin/events">
+          <Route exact path="/admin/events">
             <AdminEvents />
           </Route>
           <Route path="/admin/event/:id">
             <AdminEvent />
+          </Route>
+          <Route exact path="/admin/events/create">
+            <AdminEventCreate />
           </Route>
         </Switch>
     </Router>

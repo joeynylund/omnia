@@ -35,14 +35,14 @@ function Events() {
                         console.log("Error getting documents: ", error);
                     });
                 } else {
-                    history.push('/')
+                    history.replace('/')
                 }
             })
             .catch((error) => {
                 console.log(error);
             });
         } else {
-            history.push('/')
+            history.replace('/')
         }
     },[])
   return (
@@ -52,7 +52,15 @@ function Events() {
             <Container>
                 <div className='section'>
                     <Row>
-                        <h3 style={{fontWeight:'800'}}>Events</h3>
+                        <Col md='3'>
+                            <h3 style={{fontWeight:'800'}}>Events</h3>
+                        </Col>
+                        <Col md='9'>
+                            <Link to={'/admin/events/create'}>
+                                <Button style={{width:'400px',maxWidth:'100%', float:'right'}}>Create Event</Button>
+                            </Link>
+                        </Col>
+                        
                     </Row>
                     <Row>
                         {events.map((event) => (

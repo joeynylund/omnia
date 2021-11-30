@@ -162,7 +162,7 @@ function SignUp () {
                     region: credentials.region
                 })
                 localStorage.setItem('userName', credentials.username.toUpperCase())
-                history.push('/')
+                history.replace('/')
             })
             .catch((error) => {
                 console.log(error)
@@ -177,7 +177,7 @@ function SignUp () {
 
     useEffect(() => {
         if(currentUser !== null) {
-            history.push('/login')
+            history.replace('/login')
         } else {
             firestore.collection('users').get()
             .then((querySnapshot2) => {

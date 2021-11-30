@@ -31,7 +31,7 @@ const AdminHeader = (props) => {
   const handleLogout = () => {
     logout()
     .then(() => {
-      history.push('/login')
+      history.replace('/login')
     })
   }
 

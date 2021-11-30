@@ -17,7 +17,7 @@ function Teams () {
 
     useEffect(() => {
         if(currentUser === null) {
-            history.push('/login')
+            history.replace('/login')
         } else {
             firestore.collection("teams")
             .where("members", "array-contains", currentUser.uid).get().then((querySnapshot) => {
@@ -45,7 +45,7 @@ function Teams () {
                 <div className='section'>
                     <Row style={{display:'flex', justifyContent:'center'}}>
                         {teams.length > 0 ? teams.map((team) => (
-                            <Col md="3" style={{display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer'}} onClick={() => history.push('/teams/' + team.name)}>
+                            <Col md="3" style={{display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer'}} onClick={() => history.replace('/teams/' + team.name)}>
                                 <div style={{width:'300px', aspectRatio:'1/1', maxWidth:'100%', backgroundColor:'#eee', display:'flex', justifyContent:'center', alignItems:'center', borderRadius:'10px'}}>
                                     <img src={team.logo === '' ? defaultLogo : team.logo} style={{maxWidth:'100%',borderRadius:'10px',aspectRatio:'1/1',objectFit:'cover'}} />
                                 </div>

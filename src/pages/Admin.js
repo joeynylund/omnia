@@ -19,14 +19,14 @@ function Admin() {
                     console.log('Admin')
                 } else {
                     console.log('Not Admin')
-                    history.push('/')
+                    history.replace('/')
                 }
             })
             .catch((error) => {
                 console.log(error);
             });
         } else {
-            history.push('/')
+            history.replace('/')
         }
     },[])
 

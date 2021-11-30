@@ -103,7 +103,7 @@ function CreateProfile() {
 
     useEffect(() => {
         if(currentUser === null) {
-            history.push('/login')
+            history.replace('/login')
         } else {
             firestore.collection('player_accounts').doc(currentUser.uid).get()
             .then((docSnapshot) => {

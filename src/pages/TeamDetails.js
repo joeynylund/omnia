@@ -85,7 +85,7 @@ function TeamDetails () {
                 logo: updates.logo
             })
             .then(() => {
-                history.push('/teams/' + updates.name);
+                history.replace('/teams/' + updates.name);
                 setUpdated(true)
                 setUpdated(false)
                 toggle2()
@@ -98,7 +98,7 @@ function TeamDetails () {
 
     const deleteTeam = () => {
         firestore.collection("teams").doc(team.id).delete().then(() => {
-            history.push('/teams')
+            history.replace('/teams')
         }).catch((error) => {
             console.error("Error removing document: ", error);
         });
@@ -132,7 +132,7 @@ function TeamDetails () {
             members: filtered
         })
         .then(() => {
-            history.push('/teams')
+            history.replace('/teams')
         })
         .catch((error) => {
             // The document probably doesn't exist.

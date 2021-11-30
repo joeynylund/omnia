@@ -25,8 +25,8 @@ function Home() {
                         <h4 style={{textAlign:'center',fontWeight:'800'}}>Select A Game...</h4>
                     </Row>
                     <Row style={{display:'flex',justifyContent:'center'}}>
-                        <img src={valorant} className='game-cover' alt='Valorant Cover Art' onClick={() => history.push('/events/Valorant')} />
-                        <img src={apex} className='game-cover' alt='Apex Legends Cover Art' onClick={() => history.push('/events/Apex Legends')} />
+                        <img src={valorant} className='game-cover' alt='Valorant Cover Art' onClick={() => history.replace('/events/Valorant')} />
+                        <img src={apex} className='game-cover' alt='Apex Legends Cover Art' onClick={() => history.replace('/events/Apex Legends')} />
                     </Row>
                 </div>
             </Container>

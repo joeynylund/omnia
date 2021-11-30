@@ -6,17 +6,13 @@ import { Container, Row, Col, FormFeedback, FormGroup, Input, Button, Table } fr
 import { useAuth } from "../../config/context"
 import { Link, useHistory, useParams } from "react-router-dom"
 
-function UpdateEvent() {
+function CreateEvent() {
     const history = useHistory()
-    const [profile, setProfile] = useState({});
     const [ignError, setIgnError] = useState('');
     const [files, setFiles] = useState('');
     const [loading, setLoading] = useState(true)
     const [updated, setUpdated] = useState(false)
-    let { id } = useParams();
     const [event, setEvent] = useState({});
-    const [teams, setTeams] = useState([]);
-    const [users, setUsers] = useState([]);
     const [games, setGames] = useState([])
     const [series, setSeries] = useState([])
     const { currentUser } = useAuth();
@@ -34,48 +30,20 @@ function UpdateEvent() {
         })
     }
 
-    function convertToName(roster) {
-        if(roster === undefined) {
-
-        } else {
-            let res = teams.filter(item => roster.includes(item.id));
-            return res[0].name;
-        }
-    }
-
-    const scoreChange = (e, index) => {
-        let teamInfo = [...event.team_info];
-        teamInfo[index].score = e.target.value;
-        setEvent({...event,
-            team_info: teamInfo
-        })
-        setUpdated(true)
-        setUpdated(false)
-    }
-
-    const placementChange = (e, index) => {
-        let teamInfo = [...event.team_info];
-        teamInfo[index].placement = e.target.value;
-        setEvent({...event,
-            team_info: teamInfo
-        })
-        setUpdated(true)
-        setUpdated(false)
-    }
-
-    const updateEvent = () => {
-        firestore.collection('events').doc(id).set({
-            ...event
-        })
-        setUpdated(true)
-        setUpdated(false)
-        window.scrollTo(0,0);
-    }
-
-    const handleChange = async (event) => {
-        const file = event.target.files[0]
+    const handleChange = async (e) => {
+        const file = e.target.files[0]
         const base64 = await convertBase64(file)
-        setFiles(base64)
+        setEvent({...event, headerimage: base64})
+    }
+
+    const createEvent = () => {
+        firestore.collection('events').add({
+            ...event
+        }).then(() => {
+            history.replace('/admin/events')
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
     useEffect( async() => {
@@ -83,61 +51,26 @@ function UpdateEvent() {
             await auth.currentUser.getIdTokenResult()
             .then((idTokenResult) => {
                 if (!!idTokenResult.claims.admin) {
-                    firestore.collection('events').doc(id).get()
-                    .then((doc) => {
-                        if(doc.exists === true) {
-                            setEvent({
-                                ...doc.data(),
-                            })
-                        } else {
-                            alert('No event found')
-                        }
-                    })
-                    .catch((error) => {
-                        console.log("Error getting documents: ", error);
-                    });
-                    firestore.collection('teams').get()
+                    firestore.collection('games').get()
                     .then((querySnapshot2) => {
-                        var allTeams = [];
+                        var allGames = [];
                         querySnapshot2.forEach((doc2) => {
-                            allTeams.push({
+                            allGames.push({
                                 id: doc2.id,
                                 name: doc2.data().name
                             })
                         })
-                        setTeams(allTeams)
-                    });
-                    firestore.collection('users').get()
-                    .then((querySnapshot2) => {
-                        var allUsers = [];
-                        querySnapshot2.forEach((doc2) => {
-                            allUsers.push({
-                                id: doc2.id,
-                                username: doc2.data().username
-                            })
-                        })
-                        setUsers(allUsers)
-                        firestore.collection('games').get()
+                        setGames(allGames)
+                        firestore.collection('series').get()
                         .then((querySnapshot2) => {
-                            var allGames = [];
+                            var allSeries = [];
                             querySnapshot2.forEach((doc2) => {
-                                allGames.push({
+                                allSeries.push({
                                     id: doc2.id,
                                     name: doc2.data().name
                                 })
                             })
-                            setGames(allGames)
-                            firestore.collection('series').get()
-                            .then((querySnapshot2) => {
-                                var allSeries = [];
-                                querySnapshot2.forEach((doc2) => {
-                                    allSeries.push({
-                                        id: doc2.id,
-                                        name: doc2.data().name
-                                    })
-                                })
-                                setSeries(allSeries)
-                            });
+                            setSeries(allSeries)
                         });
                     });
                 } else {
@@ -156,9 +89,10 @@ function UpdateEvent() {
                 <Container>
                     {loading === true ? null : <div style={{padding:'5% 0px'}}>
                         <center>
-                            <h2 style={{fontWeight:'900'}}>Edit Event Details</h2>
+                            <h2 style={{fontWeight:'900'}}>Create An Event</h2>
                                 <>
-                                <img src={files === '' ? event.headerimage : files } style={{maxWidth:'100%'}} />
+                                <h5 style={{margin:'0'}}>Event Header</h5>
+                                <img src={event.headerimage} style={{maxWidth:'100%'}} />
                                 <input type="file" id="profile-image" accept="image/png, image/gif, image/jpeg" onChange={handleChange} />
                                 <br/>
                                 <br/>
@@ -167,8 +101,8 @@ function UpdateEvent() {
                                     <FormGroup style={{marginTop:'10px'}}>
                                         <Input type="text" id="ign" value={event.name} onChange={(e) => {
                                             setIgnError('')
-                                            setProfile({...profile, ign: e.target.value})
-                                        }} style={{height:'50px',width:'400px',maxWidth:'100%'}} invalid={ ignError === '' ? false : true}/>
+                                            setEvent({...event, name: e.target.value})
+                                        }} style={{height:'50px',width:'400px',maxWidth:'100%'}} />
                                         <FormFeedback style={{width:'100%',textAlign:'left'}}>{ignError}</FormFeedback>
                                     </FormGroup>
                                 </Row>
@@ -178,7 +112,7 @@ function UpdateEvent() {
                                     <FormGroup style={{marginTop:'10px'}}>
                                         <Input type="textarea" id="ign" value={event.eventoverview} onChange={(e) => {
                                             setEvent({...event, eventoverview: e.target.value})
-                                        }} style={{width:'400px',maxWidth:'100%'}} invalid={ ignError === '' ? false : true}/>
+                                        }} style={{width:'400px',maxWidth:'100%'}} />
                                         <FormFeedback style={{width:'100%',textAlign:'left'}}>{ignError}</FormFeedback>
                                     </FormGroup>
                                 </Row>
@@ -188,7 +122,7 @@ function UpdateEvent() {
                                     <FormGroup style={{marginTop:'10px'}}>
                                         <Input type="textarea" id="ign" value={event.rulesinstructions} onChange={(e) => {
                                             setEvent({...event, rulesinstructions: e.target.value})
-                                        }} style={{width:'400px',maxWidth:'100%'}} invalid={ ignError === '' ? false : true}/>
+                                        }} style={{width:'400px',maxWidth:'100%'}} />
                                         <FormFeedback style={{width:'100%',textAlign:'left'}}>{ignError}</FormFeedback>
                                     </FormGroup>
                                 </Row>
@@ -215,6 +149,7 @@ function UpdateEvent() {
                                             setIgnError('')
                                             setEvent({...event, seriesname: e.target.value})
                                         }} style={{height:'50px',width:'400px',maxWidth:'100%'}}>
+                                            <option>Select A Series</option>
                                                 {series && series.map((series) => (
                                                     <option value={series.name}>{series.name}</option>
                                                 ))}
@@ -234,33 +169,30 @@ function UpdateEvent() {
                                     </FormGroup>
                                 </Row>
                                 <br/>
-                                <h5 style={{margin:'0'}}>Registered Teams</h5>
-                                <br/>
+                                <h5 style={{margin:'0'}}>Event Fee</h5>
                                 <Row style={{justifyContent:'center'}}>
-                                    <Table striped bordered>
-                                        <tr>
-                                            <th>Team Name</th>
-                                            <th>Capt. Discord</th>
-                                            <th>Members</th>
-                                            <th>Score</th>
-                                            <th>Placement</th>
-                                        </tr>
-                                        {event.team_info !== undefined && teams.length > 1 && users.length > 0 && event.team_info.map((team,index) => (
-                                            <tr style={{height:'75px'}}>
-                                                <td>{convertToName(team.id)}</td>
-                                                <td>{team.captain}</td>
-                                                <td>{team.roster !== undefined && team.roster.map((member) => {
-                                                    let res = users.filter(item => member.includes(item.id));
-                                                    return <p style={{margin:'0',display:'inline-block'}}>{res[0].username}</p>;
-                                                })}</td>
-                                                <td>{<Input type="text" style={{backgroundColor:'#fff',borderWidth:'1px'}} value={team.score} onChange={(e) => scoreChange(e, index)} />}</td>
-                                                <td>{<Input type="text" style={{backgroundColor:'#fff',borderWidth:'1px'}} value={team.placement} onChange={(e) => placementChange(e, index)} />}</td>
-                                            </tr>
-                                        ))}
-                                    </Table>
+                                    <FormGroup style={{marginTop:'10px'}}>
+                                        <Input type="number" id="ign" value={event.fee} onChange={(e) => {
+                                            setIgnError('')
+                                            setEvent({...event, fee: e.target.value})
+                                        }} style={{height:'50px',width:'400px',maxWidth:'100%'}} />
+                                        <FormFeedback style={{width:'100%',textAlign:'left'}}>{ignError}</FormFeedback>
+                                    </FormGroup>
                                 </Row>
+                                <br/>
+                                <h5 style={{margin:'0'}}>Max Teams</h5>
+                                <Row style={{justifyContent:'center'}}>
+                                    <FormGroup style={{marginTop:'10px'}}>
+                                        <Input type="number" id="ign" value={event.maxteams} onChange={(e) => {
+                                            setIgnError('')
+                                            setEvent({...event, maxteams: e.target.value})
+                                        }} style={{height:'50px',width:'400px',maxWidth:'100%'}} />
+                                        <FormFeedback style={{width:'100%',textAlign:'left'}}>{ignError}</FormFeedback>
+                                    </FormGroup>
+                                </Row>
+                                <br/>
                                 </>
-                            <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px'}} onClick={updateEvent} size="lg">Update Event</Button>
+                            <Button className="profile-next-btn" style={{backgroundColor:'#242425',height:'50px'}} onClick={createEvent} size="lg">Create Event</Button>
                         </center>
                     </div>}
                     
@@ -271,4 +203,4 @@ function UpdateEvent() {
   );
 }
 
-export default UpdateEvent;
+export default CreateEvent;

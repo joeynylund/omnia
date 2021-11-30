@@ -21,7 +21,7 @@ function TeamInvite () {
         })
         .then(() => {
             console.log("Document successfully updated!");
-            history.push('/teams')
+            history.replace('/teams')
         })
         .catch((error) => {
             // The document probably doesn't exist.
@@ -31,7 +31,7 @@ function TeamInvite () {
 
     useEffect(() => {
         if(currentUser === null) {
-            history.push('/login')
+            history.replace('/login')
         } else {
             let userTeams = [];
             firestore.collection("teams")
@@ -53,7 +53,7 @@ function TeamInvite () {
                         }
                     });
                 } else {
-                    history.push('/')
+                    history.replace('/')
                 }
             });
         }
@@ -77,7 +77,7 @@ function TeamInvite () {
                         ))}
                     </Row>
                     <center>
-                        {message !== '' ? <><h4 style={{marginTop:'20px'}}>{message}</h4><Button onClick={() => history.push('/teams')} style={{backgroundColor:'#121212',color:'#fff',padding:'10px 40px',marginTop:'10px',fontWeight:'800'}} size='lg'>BACK TO TEAMS</Button></> : <><h4 style={{marginTop:'20px'}}>Do you want to join this team?</h4>
+                        {message !== '' ? <><h4 style={{marginTop:'20px'}}>{message}</h4><Button onClick={() => history.replace('/teams')} style={{backgroundColor:'#121212',color:'#fff',padding:'10px 40px',marginTop:'10px',fontWeight:'800'}} size='lg'>BACK TO TEAMS</Button></> : <><h4 style={{marginTop:'20px'}}>Do you want to join this team?</h4>
                         <Button onClick={accept} style={{backgroundColor:'#121212',color:'#fff',padding:'10px 40px',marginTop:'10px',fontWeight:'800'}} size='lg'>ACCEPT</Button></>}
                         
                     </center>

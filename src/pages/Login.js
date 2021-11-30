@@ -56,9 +56,9 @@ function Login() {
                 const urlParams = new URLSearchParams(queryString);
                 const product = urlParams.get('redirect')
                 if(product !== null) {
-                    history.push(product)
+                    history.replace(product)
                 } else {
-                    history.push('/')
+                    history.replace('/')
                 }
                 
             })
