@@ -46,7 +46,7 @@ const AdminHeader = (props) => {
           <Nav className="mr-auto" navbar>
           </Nav>
             
-            <Link to={'/'}>
+            <Link to={'/admin/series'}>
               <NavbarText style={{padding:'8px',fontWeight:'500',color:'#000',display:'block',textAlign:'center',cursor:'pointer'}}>SERIES</NavbarText>
             </Link>
             <Link to={'/admin/events'}>

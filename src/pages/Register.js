@@ -83,46 +83,71 @@ function Register() {
             setAgreeError('You must agree to our terms & conditions.')
         }
 
-        if(event.registeredteams.includes(team.id)) {
-            setTeamError('This team is already registered.')
-        } else {
+        if(event.registeredteams === undefined) {
             validation += 1
-        }
-
-        var count = 0;
-        event.team_info.forEach((team) => {
-            if(team.roster.some(item => registration.roster.includes(item))) {
-                count++;
+        } else {
+            if(event.registeredteams.includes(team.id)) {
+                setTeamError('This team is already registered.')
             } else {
-                
+                validation += 1
             }
-        })
-        
-        if(count > 0) {
-            setRosterError('A member of your roster is already registered on another team.')
-        } else {
-            validation += 1
         }
 
-        
+        if(event.registeredteams === undefined) {
+            validation += 1
+        } else {
+
+            var count = 0;
+            event.team_info.forEach((team) => {
+                if(team.roster.some(item => registration.roster.includes(item))) {
+                    count++;
+                } else {
+                    
+                }
+            })
+            
+            if(count > 0) {
+                setRosterError('A member of your roster is already registered on another team.')
+            } else {
+                validation += 1
+            }
+        }
         
         if(validation === 5) {
-            firestore.collection('events').doc(id).update({
-            registeredteams: [...event.registeredteams, team.id],
-            team_info: [
-                ...event.team_info,
-                {
-                    captain: registration.captain_info,
-                    id: team.id,
-                    placement: '',
-                    score: '',
-                    roster: registration.roster
-                }
-            ]
-            })
-            window.scrollTo(0,0);
-            setAlertMessage('success')
-            setTeam(null)
+            if(event.registeredteams === undefined) {
+                firestore.collection('events').doc(id).update({
+                    registeredteams: [team.id],
+                    team_info: [
+                        {
+                            captain: registration.captain_info,
+                            id: team.id,
+                            placement: '',
+                            score: '',
+                            roster: registration.roster
+                        }
+                    ]
+                    })
+                    window.scrollTo(0,0);
+                    setAlertMessage('success')
+                    setTeam(null)
+            } else {
+                firestore.collection('events').doc(id).update({
+                registeredteams: [...event.registeredteams, team.id],
+                team_info: [
+                    ...event.team_info,
+                    {
+                        captain: registration.captain_info,
+                        id: team.id,
+                        placement: '',
+                        score: '',
+                        roster: registration.roster
+                    }
+                ]
+                })
+                window.scrollTo(0,0);
+                setAlertMessage('success')
+                setTeam(null)
+            }
         } else {
             window.scrollTo(0,0);
             setAlertMessage('fail')

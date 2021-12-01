@@ -86,8 +86,14 @@ function UpdateEvent() {
                     firestore.collection('events').doc(id).get()
                     .then((doc) => {
                         if(doc.exists === true) {
-                            setEvent({
-                                ...doc.data(),
+                            firestore.collection('series').where('name','==',doc.data().seriesname).get()
+                            .then((querySnapshot) => {
+                                querySnapshot.forEach((doc2) => {
+                                    setEvent({
+                                        ...doc.data(),
+                                        medalimage: doc2.data().medal
+                                    })
+                                });
                             })
                         } else {
                             alert('No event found')
