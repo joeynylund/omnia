@@ -134,6 +134,7 @@ function CreateEvent() {
                                             setIgnError('')
                                             setEvent({...event, game: e.target.value})
                                         }} style={{height:'50px',width:'400px',maxWidth:'100%'}}>
+                                            <option>Select A Game</option>
                                                 {games && games.map((game) => (
                                                     <option value={game.name}>{game.name}</option>
                                                 ))}
@@ -151,7 +152,7 @@ function CreateEvent() {
                                         }} style={{height:'50px',width:'400px',maxWidth:'100%'}}>
                                             <option>Select A Series</option>
                                                 {series && series.map((series) => (
-                                                    <option value={series.name}>{series.name}</option>
+                                                    <option value={series.id}>{series.name}</option>
                                                 ))}
                                             </Input>
                                         <FormFeedback style={{width:'100%',textAlign:'left'}}>{ignError}</FormFeedback>

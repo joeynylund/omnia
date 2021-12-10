@@ -80,20 +80,25 @@ function UpdateEvent() {
 
     useEffect( async() => {
         if(currentUser) {
-            await auth.currentUser.getIdTokenResult()
+            auth.currentUser.getIdTokenResult()
             .then((idTokenResult) => {
                 if (!!idTokenResult.claims.admin) {
                     firestore.collection('events').doc(id).get()
                     .then((doc) => {
+                        console.log(doc.data())
                         if(doc.exists === true) {
-                            firestore.collection('series').where('name','==',doc.data().seriesname).get()
-                            .then((querySnapshot) => {
-                                querySnapshot.forEach((doc2) => {
+                            firestore.collection('series').doc(doc.data().seriesname).get()
+                            .then((doc2) => {
+                                if(doc2.exists === true) {
                                     setEvent({
                                         ...doc.data(),
+                                        series: doc2.data().name,
                                         medalimage: doc2.data().medal
                                     })
-                                });
+                                } else {
+                                    alert('Series not found')
+                                }
+                                
                             })
                         } else {
                             alert('No event found')
@@ -160,7 +165,7 @@ function UpdateEvent() {
         <AdminHeader />
             <div className='select-game' style={{minHeight:'100vh'}}>
                 <Container>
-                    {loading === true ? null : <div style={{padding:'5% 0px'}}>
+                    {loading === true ? null : event && <div style={{padding:'5% 0px'}}>
                         <center>
                             <h2 style={{fontWeight:'900'}}>Edit Event Details</h2>
                                 <>
@@ -173,7 +178,7 @@ function UpdateEvent() {
                                     <FormGroup style={{marginTop:'10px'}}>
                                         <Input type="text" id="ign" value={event.name} onChange={(e) => {
                                             setIgnError('')
-                                            setProfile({...profile, ign: e.target.value})
+                                            setEvent({...event, name: e.target.value})
                                         }} style={{height:'50px',width:'400px',maxWidth:'100%'}} invalid={ ignError === '' ? false : true}/>
                                         <FormFeedback style={{width:'100%',textAlign:'left'}}>{ignError}</FormFeedback>
                                     </FormGroup>
@@ -222,7 +227,7 @@ function UpdateEvent() {
                                             setEvent({...event, seriesname: e.target.value})
                                         }} style={{height:'50px',width:'400px',maxWidth:'100%'}}>
                                                 {series && series.map((series) => (
-                                                    <option value={series.name}>{series.name}</option>
+                                                    <option value={series.id}>{series.name}</option>
                                                 ))}
                                             </Input>
                                         <FormFeedback style={{width:'100%',textAlign:'left'}}>{ignError}</FormFeedback>

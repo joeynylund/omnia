@@ -24,14 +24,18 @@ function Event() {
         firestore.collection('events').doc(id).get()
             .then((doc) => {
                 if(doc.exists === true) {
-                    firestore.collection('series').where('name','==',doc.data().seriesname).get()
-                    .then((querySnapshot) => {
-                        querySnapshot.forEach((doc2) => {
+                    firestore.collection('series').doc(doc.data().seriesname).get()
+                    .then((doc2) => {
+                        if(doc2.exists === true) {
                             setEvent({
-                            ...doc.data(),
-                            medalimage: doc2.data().medal
-                        })
-                        });
+                                ...doc.data(),
+                                series: doc2.data().name,
+                                medalimage: doc2.data().medal
+                            })
+                        } else {
+                            alert('Series not found')
+                        }
+                        
                     })
                 } else {
                     alert('No event found')
@@ -52,7 +56,7 @@ function Event() {
                     <Row style={{alignItems:'center'}}>
                         <Col lg='9'>
                             <h1 style={{fontWeight:'800',margin:'0'}}>{event.name}</h1>
-                            <h3 style={{margin:'0'}}>{event.seriesname}</h3>
+                            <h3 style={{margin:'0'}}>{event.series}</h3>
                             <h5 style={{margin:'0'}}>{'Game: ' + event.game}</h5>
                             <p>{setDate(event.start_date)}</p>
                         </Col>

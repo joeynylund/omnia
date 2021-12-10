@@ -26,7 +26,8 @@ import AdminEvents from './pages/admin/Events';
 import AdminEvent from './pages/admin/Event';
 import AdminEventCreate from './pages/admin/CreateEvent';
 import AdminSeries from './pages/admin/Series';
-
+import AdminUpdateSeries from './pages/admin/UpdateSeries';
+import AdminCreateSeries from './pages/admin/CreateSeries';
 
 function App() {
   
@@ -88,6 +89,13 @@ function App() {
           <Route exact path="/admin/series">
             <AdminSeries />
           </Route>
+          <Route exact path="/admin/series/create">
+            <AdminCreateSeries />
+          </Route>
+          <Route path="/admin/series/:id">
+            <AdminUpdateSeries />
+          </Route>
+          
         </Switch>
     </Router>
     </AuthProvider>
