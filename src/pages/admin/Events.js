@@ -4,13 +4,15 @@ import Footer from '../../components/Footer';
 import { Container, Row, Col, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, Button } from 'reactstrap';
 import { firestore, auth } from '../../config/firebase';
 import { useAuth } from "../../config/context";
-import { Link, useHistory } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom";
+import Loading from '../../components/Loading';
 
 function Events() {
 
     const history = useHistory();
     const { currentUser } = useAuth();
     const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     function setDate(startDate) {
         var date = new Date(startDate);
@@ -18,9 +20,9 @@ function Events() {
         return date.toDateString();
     }
 
-    useEffect(() => {
+    useEffect(async () => {
         if(currentUser) {
-            auth.currentUser.getIdTokenResult()
+            await auth.currentUser.getIdTokenResult()
             .then((idTokenResult) => {
                 if (!!idTokenResult.claims.admin) {
                     firestore.collection('events').get()
@@ -30,6 +32,7 @@ function Events() {
                             eventsArray.push({...doc.data(), id: doc.id})
                         });
                         setEvents(eventsArray)
+                        setLoading(false)
                     })
                         .catch((error) => {
                         console.log("Error getting documents: ", error);
@@ -50,7 +53,7 @@ function Events() {
         <AdminHeader />
         <div className='select-game'>
             <Container>
-                <div className='section'>
+                {loading === true ? <Loading /> : <div className='section'>
                     <Row>
                         <Col md='3'>
                             <h3 style={{fontWeight:'800'}}>Events</h3>
@@ -94,7 +97,7 @@ function Events() {
                             </Col>
                         ))}
                     </Row>
-                </div>
+                </div>}
             </Container>
         </div>
         <Footer />
