@@ -185,8 +185,17 @@ function Register() {
         await firestore.collection('events').doc(id).get()
             .then((doc) => {
                 if(doc.exists === true) {
-                    var event = {...doc.data()};
-                    var teams2 = [];
+                    firestore.collection('series').doc(doc.data().seriesname).get()
+                    .then((doc2) => {
+                        if(doc2.exists === true) {
+                            var event = {
+                                ...doc.data(),
+                                seriesname: doc2.data().name
+                            };
+                            var teams2 = [];
+                        }
+                                                                                                                                                                   
+
                     firestore.collection('users').get()
                     .then((querySnapshot2) => {
                         var allUsers = [];
@@ -214,6 +223,7 @@ function Register() {
                             });
                         }
                     setEvent(event);
+                    })
                 });
                 } else {
                     alert('No event found')
