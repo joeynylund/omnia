@@ -8,12 +8,14 @@ import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "../config/context";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCrown } from '@fortawesome/free-solid-svg-icons';
+import Loading from '../components/Loading';
 
 function Teams () {
 
     const history = useHistory();
     const { currentUser } = useAuth();
     const [teams, setTeams] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if(currentUser === null) {
@@ -32,6 +34,7 @@ function Teams () {
                     })
                 });
                 setTeams(userTeams)
+                setLoading(false)
             });
         }
     }, [])
@@ -42,7 +45,7 @@ function Teams () {
         <div style={{backgroundColor:'#000',padding:'20px',display:'flex',justifyContent:'center'}}><h1 style={{color:'#fff',fontWeight:'800',margin:'0'}}>{currentUser.displayName.toUpperCase()}'s TEAMS</h1></div>
         <div className='select-game'>
             <Container>
-                <div className='section'>
+            {loading === true ? <Loading /> : teams && <div className='section'>
                     <Row style={{display:'flex', justifyContent:'center'}}>
                         {teams.length > 0 ? teams.map((team) => (
                             <Col md="3" style={{display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer'}} onClick={() => history.replace('/teams/' + team.name)}>
@@ -59,6 +62,7 @@ function Teams () {
                         </Link>
                     </center>
                 </div>
+            }
             </Container>
         </div>
         <Footer />

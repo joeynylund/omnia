@@ -6,6 +6,7 @@ import { firestore } from '../config/firebase';
 import defaultLogo from '../assets/default-team-logo.png';
 import { useHistory, useParams } from "react-router-dom";
 import { useAuth } from "../config/context";
+import Loading from '../components/Loading';
 
 function TeamInvite () {
 
@@ -14,6 +15,7 @@ function TeamInvite () {
     let { id } = useParams();
     const [teams, setTeams] = useState([]);
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(true);
 
     const accept = () => {
         firestore.collection('teams').doc(teams[0].id).update({
@@ -55,6 +57,7 @@ function TeamInvite () {
                 } else {
                     history.replace('/')
                 }
+                setLoading(false)
             });
         }
     }, [])
@@ -65,7 +68,7 @@ function TeamInvite () {
         <div style={{backgroundColor:'#000',padding:'20px',display:'flex',justifyContent:'center'}}><h1 style={{color:'#fff',fontWeight:'800',margin:'0'}}>YOU'VE BEEN INVITED</h1></div>
         <div className='select-game'>
             <Container>
-                <div className='section'>
+            {loading === true ? <Loading /> : teams && <div className='section'>
                     <Row style={{display:'flex', justifyContent:'center'}}>
                         {teams.length > 0 && teams.map((team) => (
                             <Col md="3" style={{display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer'}}>
@@ -82,6 +85,7 @@ function TeamInvite () {
                         
                     </center>
                 </div>
+            }
             </Container>
         </div>
         <Footer />

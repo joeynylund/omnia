@@ -3,8 +3,9 @@ import AdminHeader from '../../components/AdminHeader';
 import SmallFooter from '../../components/SmallFooter';
 import { firestore, auth } from '../../config/firebase';
 import { Container, Row, Col, FormFeedback, FormGroup, Input, Button, Table } from 'reactstrap';
-import { useAuth } from "../../config/context"
-import { Link, useHistory, useParams } from "react-router-dom"
+import { useAuth } from "../../config/context";
+import { Link, useHistory, useParams } from "react-router-dom";
+import Loading from '../../components/Loading';
 
 function UpdateEvent() {
     const history = useHistory()
@@ -148,6 +149,7 @@ function UpdateEvent() {
                                     })
                                 })
                                 setSeries(allSeries)
+                                setLoading(false)
                             });
                         });
                     });
@@ -165,7 +167,7 @@ function UpdateEvent() {
         <AdminHeader />
             <div className='select-game' style={{minHeight:'100vh'}}>
                 <Container>
-                    {loading === true ? null : event && <div style={{padding:'5% 0px'}}>
+                    {loading === true ? <Loading /> : event && <div style={{padding:'5% 0px'}}>
                         <center>
                             <h2 style={{fontWeight:'900'}}>Edit Event Details</h2>
                                 <>

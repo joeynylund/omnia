@@ -6,7 +6,7 @@ import banner from '../assets/omnia_full_dark.png';
 import { useAuth } from "../config/context"
 import { Link, useHistory } from "react-router-dom"
 
-function Login() {
+function ForgotPassword () {
     const history = useHistory()
     const [loginCredentials, setLoginCredentials] = useState({
         email: '',
@@ -15,6 +15,7 @@ function Login() {
     const { login } = useAuth()
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [message, setMessage] = useState('');
 
     const handleChange = (e) => {
         const {id, value} = e.target;
@@ -25,10 +26,6 @@ function Login() {
 
         if(id === 'email') {
             setEmailError('')
-        }
-
-        if(id === 'password') {
-            setPasswordError('')
         }
 
     }
@@ -44,29 +41,13 @@ function Login() {
             validation++
         }
 
-        if(loginCredentials.password === "") {
-            setPasswordError('Password cannot be blank!')
-        } else {
-            validation++
-        }
-
-        if(validation === 2) {
-            auth.signInWithEmailAndPassword(loginCredentials.email, loginCredentials.password).then(() => {
-                const queryString = window.location.search;
-                const urlParams = new URLSearchParams(queryString);
-                const product = urlParams.get('redirect')
-                if(product !== null) {
-                    history.replace(product)
-                } else {
-                    history.replace('/')
-                }
-                
+        if(validation === 1) {
+            auth.sendPasswordResetEmail(loginCredentials.email).then(() => {
+                setMessage('success')
             })
             .catch((error) => {
                 console.log(error)
-                if(error.code === 'auth/wrong-password') {
-                    setPasswordError('That password is incorrect. Try again.')
-                }
+                setMessage('fail')
                 if(error.code === 'auth/user-not-found') {
                     setEmailError('A user with that email does not exist.')
                     setPasswordError('')
@@ -81,22 +62,21 @@ function Login() {
                 <Container>
                     <div style={{padding:'5% 0px'}}>
                         <center>
+                        {message === 'success'? <div style={{display:'block',backgroundColor:'mediumspringgreen',padding:'10px',borderRadius:'10px',marginBottom:'15px'}}><p style={{margin:'0'}}><strong>Success!</strong> You should receive an email soon to reset your password! <Link style={{textDecoration:'underline', color:'#000'}} to={"/"}><u>Back Home</u></Link></p></div> : message === 'fail' ? <div style={{display:'block',backgroundColor:'indianred',padding:'10px',borderRadius:'10px',marginBottom:'15px'}}><p style={{margin:'0'}}><strong>Uh oh!</strong> Looks like you have some errors to fix!</p></div> : null}
+
                         <img src={banner} style={{maxWidth:'100%'}} />
+                        <br/>
+                        <br/>
+                        <p>Enter the email address associated with your Omnia account to reset your password.</p>
                         <Form style={{width:'500px', maxWidth:'100%', marginTop:'20px'}} onSubmit={handleSubmit}>
                             <FormGroup>
                                 <Label style={{width:'100%',textAlign:'left'}}>Email Address</Label>
                                 <Input type="email" id="email" onChange={handleChange} style={{height:'50px'}} invalid={emailError === '' ? false : true}></Input>
                                 <FormFeedback style={{width:'100%',textAlign:'left'}}>{emailError}</FormFeedback>
                             </FormGroup>
-                            <FormGroup style={{marginTop:'10px'}}>
-                                <Label style={{width:'100%',textAlign:'left'}}>Password</Label>
-                                <Input type="password" id="password" onChange={handleChange} style={{height:'50px'}} invalid={passwordError === '' ? false : true}></Input>
-                                <FormFeedback style={{width:'100%',textAlign:'left'}}>{passwordError}</FormFeedback>
-                            </FormGroup>
-                            <Button style={{marginTop:'20px',width:'100%',backgroundColor:'#242425',height:'50px'}}>Login</Button>
+                            <Button style={{marginTop:'20px',width:'100%',backgroundColor:'#242425',height:'50px'}}>Reset Password</Button>
                         </Form>
-                        <p style={{marginTop:'20px'}}><Link to='/forgot-password' style={{color:'#000'}}>Forgot your password?</Link></p>
-                        <p style={{marginTop:'20px'}}>Don't have an account? <Link to='/signup' style={{color:'#000'}}>Create One</Link></p>
+                        <p style={{marginTop:'20px'}}><Link to='/login' style={{color:'#000'}}>Back To Login</Link></p>
                         </center>
                     </div>
                 </Container>
@@ -105,4 +85,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPassword;

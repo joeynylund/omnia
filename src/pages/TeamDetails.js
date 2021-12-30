@@ -8,6 +8,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useAuth } from "../config/context";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import Loading from '../components/Loading';
 
 function TeamDetails () {
 
@@ -183,10 +184,12 @@ function TeamDetails () {
                 })
             } else {
                 alert('Team not found!')
+                setLoading(false)
             }
         })
         .catch((error) => {
             console.log(error)
+            setLoading(false)
         });
         
 
@@ -198,7 +201,7 @@ function TeamDetails () {
         <div style={{backgroundColor:'#000',padding:'20px',display:'flex',justifyContent:'center'}}><h1 style={{color:'#fff',fontWeight:'800',margin:'0',textTransform:'uppercase'}}>{team.name}</h1></div>
         <div className='select-game'>
             <Container>
-                <div className='section'>
+            {loading === true ? <Loading /> : teams && <div className='section'>
                     <Row style={{display:'flex', justifyContent:'center'}}>
                         <Col md="3" style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
                             <div style={{width:'300px', aspectRatio:'1/1', maxWidth:'100%', backgroundColor:'#eee', display:'flex', justifyContent:'center', alignItems:'center', borderRadius:'10px'}}>
@@ -263,6 +266,7 @@ function TeamDetails () {
                     </Row>
                     </center>
                 </div>
+}
             </Container>
         </div>
         <Footer />

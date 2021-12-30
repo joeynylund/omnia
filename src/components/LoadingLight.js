@@ -2,13 +2,13 @@ import React from 'react';
 import logo from '../assets/omnia.png';
 import Spinner from 'react-spinkit';
 
-const Loading = () => {
+const LoadingLight = () => {
 
   return (
         <div style={{display:'flex',justifyContent:'center',padding:'5% 0%'}}>
-            <Spinner name="ball-pulse-sync" fadeIn='none'/>
+            <Spinner name="ball-pulse-sync" fadeIn='none' color='#fff' />
         </div>
   );
 }
 
-export default Loading;
+export default LoadingLight;

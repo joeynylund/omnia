@@ -5,7 +5,8 @@ import defaultPic from '../assets/default-profile-picture.png';
 import { firestore } from '../config/firebase';
 import { Container, Row, Col, Button } from 'reactstrap';
 import { useAuth } from "../config/context"
-import { Link, useParams, useHistory } from "react-router-dom"
+import { Link, useParams, useHistory } from "react-router-dom";
+import Loading from '../components/LoadingLight';
 
 function UpdateProfile() {
     const history = useHistory()
@@ -13,6 +14,7 @@ function UpdateProfile() {
     const [profile, setProfile] = useState({});
     const [user, setUser] = useState({});
     const [files, setFiles] = useState('');
+    const [loading, setLoading] = useState(true);
     const { currentUser } = useAuth();
 
     function checkProfile() {
@@ -26,10 +28,12 @@ function UpdateProfile() {
                         setUser(doc.data())
                         setProfile(querySnapshot3.data())
                         setFiles(querySnapshot3.data().profile_image)
+                        setLoading(false)
                 });
                 });
             } else {
                 alert('Profile not found')
+                setLoading(false)
             }
             
         })
@@ -45,6 +49,7 @@ function UpdateProfile() {
         <Header />
             <div className='profile-bg' style={{minHeight:'100vh'}}>
                 <Container>
+                {loading === true ? <Loading /> : profile &&
                     <Row>
                         <Col md='12' lg='8' style={{paddingTop:'20px'}}>
                             <>
@@ -157,7 +162,7 @@ function UpdateProfile() {
                             </div>
                         </Col>
                     </Row>
-                    
+                }
                 </Container>
             </div>
         <SmallFooter />

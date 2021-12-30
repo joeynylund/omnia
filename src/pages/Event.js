@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 import { Container, Row, Col, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { firestore } from '../config/firebase';
 import { Link, useHistory, useParams } from "react-router-dom"
-
+import Loading from '../components/Loading';
 
 function Event() {
 
@@ -12,6 +12,7 @@ function Event() {
     let { id } = useParams();
     const [event, setEvent] = useState({});
     const [activeTab, setActiveTab] = useState('1');
+    const [loading, setLoading] = useState(true);
 
     function setDate(startDate) {
         var date = new Date(startDate);
@@ -35,14 +36,16 @@ function Event() {
                         } else {
                             alert('Series not found')
                         }
-                        
+                        setLoading(false)
                     })
                 } else {
                     alert('No event found')
+                    setLoading(false)
                 }
             })
             .catch((error) => {
                 console.log("Error getting documents: ", error);
+                setLoading(false)
             });
 
     },[])
@@ -50,6 +53,7 @@ function Event() {
     <>
         <Header />
         <div className='select-game'>
+        {loading === true ? <Loading /> : event && <>
         <div className='event-banner' style={{width:'100%', height:'450px',backgroundColor:'#121212',backgroundRepeat:'no-repeat', backgroundSize:'cover', backgroundPosition:'center', backgroundImage: `url(${event.headerimage})`}}></div>
             <Container style={{backgroundColor:'#fff'}}>    
                 <div className='section'>
@@ -96,6 +100,8 @@ function Event() {
                     </Row>
                 </div>
             </Container>
+            </>
+}
         </div>
         <Footer />
     </>

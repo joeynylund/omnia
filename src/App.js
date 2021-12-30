@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import Home from './pages/Home';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import Reset from './pages/Reset';
 import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import CreateProfile from './pages/CreateProfile';
@@ -40,6 +42,12 @@ function App() {
           </Route>
           <Route exact path="/login">
             <Login />
+          </Route>
+          <Route exact path="/forgot-password">
+            <ForgotPassword />
+          </Route>
+          <Route exact path="/reset">
+            <Reset />
           </Route>
           <Route path="/profile/:username">
             <Profile />

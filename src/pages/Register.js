@@ -5,7 +5,7 @@ import { Container, Row, Col, Input, FormGroup, Button, Label } from 'reactstrap
 import { firestore } from '../config/firebase';
 import { useAuth } from "../config/context";
 import { Link, useHistory, useParams } from "react-router-dom"
-
+import Loading from '../components/Loading';
 
 function Register() {
 
@@ -24,6 +24,7 @@ function Register() {
     const [agreeError, setAgreeError] = useState('');
     const [registration, setRegistration] = useState({});
     const [agree, setAgree] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     function setDate(startDate) {
         var date = new Date(startDate);
@@ -223,14 +224,17 @@ function Register() {
                             });
                         }
                     setEvent(event);
+                    setLoading(false);
                     })
                 });
                 } else {
                     alert('No event found')
+                    setLoading(false);
                 }
             })
             .catch((error) => {
                 console.log("Error getting documents: ", error);
+                setLoading(false);
             });
 
     },[])
@@ -239,6 +243,7 @@ function Register() {
         <Header />
         <>
             <div className='select-game'>
+            {loading === true ? <Loading /> : event && <>
             <div className='event-banner' style={{width:'100%', height:'450px',backgroundColor:'#121212',backgroundRepeat:'no-repeat', backgroundSize:'cover', backgroundPosition:'center', backgroundImage: `url(${event.headerimage})`}}></div>
 
                 <div style={{padding:'5% 0px'}}>
@@ -322,6 +327,7 @@ function Register() {
                         </center>
                     </Container>
                 </div>
+                </>}
             </div>
         </>
         <Footer />
