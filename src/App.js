@@ -7,6 +7,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import { AuthProvider } from './config/context';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
@@ -21,7 +22,7 @@ import CreateTeam from './pages/CreateTeam';
 import TeamInvite from './pages/TeamInvite';
 import Events from './pages/Events';
 import Event from './pages/Event';
-import { AuthProvider } from './config/context';
+import AccountSettings from './pages/AccountSettings';
 import TeamDetails from './pages/TeamDetails';
 import Register from './pages/Register';
 import AdminEvents from './pages/admin/Events';
@@ -48,6 +49,9 @@ function App() {
           </Route>
           <Route exact path="/reset">
             <Reset />
+          </Route>
+          <Route exact path="/account-settings">
+            <AccountSettings />
           </Route>
           <Route path="/profile/:username">
             <Profile />

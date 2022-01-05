@@ -95,18 +95,20 @@ const Header = (props) => {
                 ATHLETE PROFILE
               </DropdownItem>
               <Link to={'/teams'}>
-              <DropdownItem>
-                TEAMS
-              </DropdownItem>
+                <DropdownItem>
+                  TEAMS
+                </DropdownItem>
               </Link>
-              <DropdownItem>
-                ACCOUNT SETTINGS
-              </DropdownItem>
+              <Link to={'/account-settings'}>
+                <DropdownItem>
+                  ACCOUNT SETTINGS
+                </DropdownItem>
+              </Link>
               {isAdmin === true && 
               <Link to={'/admin'}>
-              <DropdownItem>
-                ADMIN
-              </DropdownItem>
+                <DropdownItem>
+                  ADMIN
+                </DropdownItem>
               </Link>}
               <DropdownItem onClick={handleLogout}>
                 LOGOUT

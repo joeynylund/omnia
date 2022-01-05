@@ -6,7 +6,7 @@ import banner from '../assets/omnia_full_dark.png';
 import { useAuth } from "../config/context"
 import { Link, useHistory } from "react-router-dom"
 
-function ForgotPassword () {
+function ResetPassword () {
     const history = useHistory()
     const [loginCredentials, setLoginCredentials] = useState({});
     const { login } = useAuth()
@@ -118,4 +118,4 @@ function ForgotPassword () {
   );
 }
 
-export default ForgotPassword;
+export default ResetPassword;
