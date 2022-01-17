@@ -14,26 +14,16 @@ function Teams () {
 
     const history = useHistory();
     const { currentUser } = useAuth();
-    const [teams, setTeams] = useState([]);
+    const [user, setUser] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if(currentUser === null) {
             history.replace('/login')
         } else {
-            firestore.collection("teams")
-            .where("members", "array-contains", currentUser.uid).get().then((querySnapshot) => {
-                var userTeams = [];
-                querySnapshot.forEach((doc) => {
-                    userTeams.push({
-                        id: doc.id,
-                        name: doc.data().name,
-                        logo: doc.data().logo,
-                        members: doc.data().members,
-                        captain: doc.data().captain
-                    })
-                });
-                setTeams(userTeams)
+            firestore.collection("users")
+            .doc(currentUser.uid).get().then((doc) => {
+                setUser(doc.data())
                 setLoading(false)
             });
         }
@@ -45,16 +35,16 @@ function Teams () {
         <div style={{backgroundColor:'#000',padding:'20px',display:'flex',justifyContent:'center'}}><h1 style={{color:'#fff',fontWeight:'800',margin:'0'}}>ACCOUNT SETTINGS</h1></div>
         <div>
             <Container>
-            {loading === true ? <Loading /> : teams && <div className='section'>
+            {loading === true ? <Loading /> : user && <div className='section'>
                 <Form style={{width:'500px', maxWidth:'100%', marginTop:'20px'}}>
                     <FormGroup>
                         <Label style={{width:'100%',textAlign:'left'}}>Full Name</Label>
-                        <Input type="text" id="firstName" style={{height:'50px'}}></Input>
+                        <Input type="text" id="firstName" value={user.name} style={{height:'50px'}}></Input>
                         <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
                     </FormGroup>
                     <FormGroup style={{marginTop:'10px'}}>
                         <Label style={{width:'100%',textAlign:'left'}}>Username</Label>
-                        <Input type="text" id="firstName" style={{height:'50px'}}></Input>
+                        <Input type="text" id="firstName" value={user.username} style={{height:'50px'}}></Input>
                         <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
                     </FormGroup>
                     <FormGroup style={{marginTop:'10px'}}>
@@ -64,7 +54,7 @@ function Teams () {
                     </FormGroup>
                     <FormGroup style={{marginTop:'10px'}}>
                         <Label style={{width:'100%',textAlign:'left'}}>Account Email</Label>
-                        <Input type="text" id="firstName" style={{height:'50px'}}></Input>
+                        <Input type="text" id="firstName" value={user.email} style={{height:'50px'}}></Input>
                         <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
                     </FormGroup>
                     <FormGroup style={{marginTop:'10px'}}>
