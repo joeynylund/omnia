@@ -6,8 +6,6 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
-  NavItem,
-  NavLink,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -20,7 +18,7 @@ import {
 import { firestore, auth } from '../config/firebase';
 import { useAuth } from "../config/context"
 
-const Header = (props) => {
+const Header = () => {
 
   const history = useHistory()
   const { currentUser, logout } = useAuth();

@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCrown } from '@fortawesome/free-solid-svg-icons';
 import Loading from '../components/Loading';
 
-function Teams () {
+function AccountSettings () {
 
     const history = useHistory();
     const { currentUser } = useAuth();
@@ -77,4 +77,4 @@ function Teams () {
   );
 }
 
-export default Teams;
+export default AccountSettings;

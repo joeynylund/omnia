@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from '../assets/omnia.png';
 import Spinner from 'react-spinkit';
 
 const Loading = () => {
