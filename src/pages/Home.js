@@ -5,7 +5,7 @@ import { Container, Row } from 'reactstrap';
 import banner from '../assets/omnia-banner.png';
 import apex from '../assets/apex.jpg';
 import valorant from '../assets/valorant.jpg';
-import { useHistory } from 'react-router-dom'; 
+import { useHistory , Link} from 'react-router-dom'; 
 
 function Home() {
 
@@ -25,8 +25,8 @@ function Home() {
                         <h4 style={{textAlign:'center',fontWeight:'800'}}>Select A Game...</h4>
                     </Row>
                     <Row style={{display:'flex',justifyContent:'center'}}>
-                        <img src={valorant} className='game-cover' alt='Valorant Cover Art' onClick={() => history.replace('/events/Valorant')} />
-                        <img src={apex} className='game-cover' alt='Apex Legends Cover Art' onClick={() => history.replace('/events/Apex Legends')} />
+                        <Link to='/events/Valorant' style={{width:'auto'}}><img src={valorant} className='game-cover' alt='Valorant Cover Art' /></Link>
+                        <Link to='/events/Apex Legends' style={{width:'auto'}}><img src={apex} className='game-cover' alt='Apex Legends Cover Art' /></Link>
                     </Row>
                 </div>
             </Container>
