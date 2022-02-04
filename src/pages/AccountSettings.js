@@ -54,7 +54,7 @@ function AccountSettings () {
                     </FormGroup>
                     <FormGroup style={{marginTop:'10px'}}>
                         <Label style={{width:'100%',textAlign:'left'}}>Account Email</Label>
-                        <Input type="text" id="firstName" value={user.email} style={{height:'50px'}}></Input>
+                        <Input type="text" id="firstName" value={user.email} style={{height:'50px'}} readOnly></Input>
                         <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
                     </FormGroup>
                     <FormGroup style={{marginTop:'10px'}}>
