@@ -36,39 +36,47 @@ function AccountSettings () {
         <div>
             <Container>
             {loading === true ? <Loading /> : user && <div className='section'>
-                <Form style={{width:'500px', maxWidth:'100%', marginTop:'20px'}}>
-                    <FormGroup>
-                        <Label style={{width:'100%',textAlign:'left'}}>Full Name</Label>
-                        <Input type="text" id="firstName" value={user.name} style={{height:'50px'}}></Input>
-                        <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
-                    </FormGroup>
-                    <FormGroup style={{marginTop:'10px'}}>
-                        <Label style={{width:'100%',textAlign:'left'}}>Username</Label>
-                        <Input type="text" id="firstName" value={user.username} style={{height:'50px'}}></Input>
-                        <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
-                    </FormGroup>
-                    <FormGroup style={{marginTop:'10px'}}>
-                        <Label style={{width:'100%',textAlign:'left'}}>Phone Number</Label>
-                        <Input type="text" id="firstName" style={{height:'50px'}}></Input>
-                        <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
-                    </FormGroup>
-                    <FormGroup style={{marginTop:'10px'}}>
-                        <Label style={{width:'100%',textAlign:'left'}}>Account Email</Label>
-                        <Input type="text" id="firstName" value={user.email} style={{height:'50px'}} readOnly></Input>
-                        <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
-                    </FormGroup>
-                    <FormGroup style={{marginTop:'10px'}}>
-                        <Label style={{width:'100%',textAlign:'left'}}>PayPal Email</Label>
-                        <Input type="text" id="firstName" style={{height:'50px'}}></Input>
-                        <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
-                    </FormGroup>
-                </Form>
-                    <center>
-                        <Link to={'/teams/create'}>
-                            <Button style={{backgroundColor:'#121212',color:'#fff',padding:'10px 40px',marginTop:'20px',fontWeight:'800'}} size='lg'>SAVE CHANGES</Button>
-                        </Link>
-                    </center>
-                </div>
+                <Row style={{display:'flex',alignItems:'center'}}>
+                    <Col md="6" style={{display:'flex',justifyContent:'center'}}>
+                        <Form style={{width:'500px', maxWidth:'100%', marginTop:'20px'}}>
+                            <FormGroup>
+                                <Label style={{width:'100%',textAlign:'left'}}>Full Name</Label>
+                                <Input type="text" id="firstName" value={user.name} style={{height:'50px'}}></Input>
+                                <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
+                            </FormGroup>
+                            <FormGroup style={{marginTop:'10px'}}>
+                                <Label style={{width:'100%',textAlign:'left'}}>Username</Label>
+                                <Input type="text" id="firstName" value={user.username} style={{height:'50px'}}></Input>
+                                <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
+                            </FormGroup>
+                            <FormGroup style={{marginTop:'10px'}}>
+                                <Label style={{width:'100%',textAlign:'left'}}>Phone Number</Label>
+                                <Input type="text" id="firstName" style={{height:'50px'}}></Input>
+                                <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
+                            </FormGroup>
+                            <FormGroup style={{marginTop:'10px'}}>
+                                <Label style={{width:'100%',textAlign:'left'}}>Account Email</Label>
+                                <Input type="text" id="firstName" value={user.email} style={{height:'50px'}} readOnly></Input>
+                                <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
+                            </FormGroup>
+                            <FormGroup style={{marginTop:'10px'}}>
+                                <Label style={{width:'100%',textAlign:'left'}}>PayPal Email</Label>
+                                <Input type="text" id="firstName" style={{height:'50px'}}></Input>
+                                <FormFeedback style={{width:'100%',textAlign:'left'}}></FormFeedback>
+                            </FormGroup>
+                        </Form>
+                    </Col>
+                    <Col md="6" style={{display:'flex',alignItems:'center',flexDirection:'column'}}>
+                        <Button style={{backgroundColor:'#121212',color:'#fff',padding:'10px 40px',marginTop:'20px',fontWeight:'800', width:'300px'}} size='lg'>CHANGE EMAIL</Button><br/>
+                        <Button style={{backgroundColor:'#121212',color:'#fff',padding:'10px 40px',marginTop:'20px',fontWeight:'800', width:'300px'}} size='lg'>CHANGE PASSWORD</Button>
+                    </Col>
+                </Row>
+                <center>
+                    <Link to={'/teams/create'}>
+                        <Button style={{backgroundColor:'#121212',color:'#fff',padding:'10px 40px',marginTop:'20px',fontWeight:'800'}} size='lg'>SAVE CHANGES</Button>
+                    </Link>
+                </center>
+            </div>
             }
             </Container>
         </div>
